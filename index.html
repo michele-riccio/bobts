@@ -1612,7 +1612,7 @@ body.mgr-open #mgr-backdrop { opacity: 1; pointer-events: auto; }
 body.bgt-open #bgt-overlay { transform: translateY(0); }
 
 #bgt-bar {
-  background: var(--navy); height: 54px; flex-shrink: 0;
+  background: var(--navy); height: 68px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 24px; border-bottom: 2px solid var(--red);
   gap: 12px;
@@ -1878,6 +1878,40 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
 .mgr-foot { padding: 16px 24px; text-align: center; border-top: 1px solid rgba(255,255,255,.07) !important; }
 .mgr-foot-txt { font-size: 10px; color: rgba(255,255,255,.22); letter-spacing: .06em; }
 
+.bgt-sc-label { font-size: 10px; color: rgba(255,255,255,.3); letter-spacing: .06em; white-space: nowrap; }
+.bgt-tiers { display: flex; gap: 6px; }
+.bgt-tier-btn {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 6px 14px; border-radius: 6px; border: 1.5px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.10); cursor: pointer; transition: all .18s;
+  min-width: 88px; gap: 1px;
+}
+.bgt-tier-btn:hover { border-color: rgba(255,255,255,.55); background: rgba(255,255,255,.18); }
+.bgt-tier-btn.on { background: #fff; border-color: #fff; }
+.btb-tier {
+  font-family: var(--sans); font-size: 15px; font-weight: 800; letter-spacing: .04em;
+  color: rgba(255,255,255,.65); line-height: 1; transition: color .18s;
+}
+.bgt-tier-btn.on .btb-tier { color: var(--navy); }
+.btb-name {
+  font-family: var(--sans); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(255,255,255,.45); line-height: 1; transition: color .18s;
+}
+.bgt-tier-btn.on .btb-name { color: rgba(13,27,42,.6); }
+.btb-price {
+  font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: .02em;
+  color: rgba(255,255,255,.4); line-height: 1.2; margin-top: 1px; transition: color .18s;
+}
+.bgt-tier-btn.on .btb-price { color: var(--navy); }
+.bgt-tier-btn:hover .btb-tier { color: #fff; }
+.bgt-tier-btn:hover .btb-name { color: rgba(255,255,255,.8); }
+.bgt-tier-btn:hover .btb-price { color: rgba(255,255,255,.7); }
+.bgt-reset-btn {
+  font-size: 14px; color: rgba(255,255,255,.35); background: transparent;
+  border: 1px solid rgba(255,255,255,.1); border-radius: 4px;
+  padding: 5px 9px; cursor: pointer; transition: all .15s;
+}
+.bgt-reset-btn:hover { color: #fff; border-color: rgba(255,255,255,.3); }
 </style>
 </head>
 <body>
@@ -2177,13 +2211,26 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
   <div id="bgt-bar">
     <div class="bgt-bar-title">€ <em>Preventivo</em> Interattivo</div>
     <div class="bgt-bar-right">
-      <span class="bgt-sc-label">Scenario:</span>
-      <div class="bgt-presets">
-        <button class="bgt-p-btn on" data-p="T1">T1 Base &nbsp;€51K</button>
-        <button class="bgt-p-btn" data-p="T2">T2 Standard &nbsp;€63.75K</button>
-        <button class="bgt-p-btn" data-p="T3">T3 Esteso &nbsp;€76.5K</button>
-        <button class="bgt-p-btn" data-p="OFF">Svuota</button>
+      <span class="bgt-sc-label">Seleziona scenario:</span>
+      <div class="bgt-tiers">
+        <button class="bgt-tier-btn on" data-p="T1">
+          <span class="btb-tier">T1</span>
+          <span class="btb-name">Base</span>
+          <span class="btb-price">€ 51.000</span>
+        </button>
+        <button class="bgt-tier-btn" data-p="T2">
+          <span class="btb-tier">T2</span>
+          <span class="btb-name">Standard</span>
+          <span class="btb-price">€ 63.750</span>
+        </button>
+        <button class="bgt-tier-btn" data-p="T3">
+          <span class="btb-tier">T3</span>
+          <span class="btb-name">Esteso</span>
+          <span class="btb-price">€ 76.500</span>
+        </button>
       </div>
+      <div class="bgt-bar-sep"></div>
+      <button class="bgt-reset-btn" data-p="OFF" title="Svuota tutto">↺</button>
       <div class="bgt-bar-sep"></div>
       <div class="bgt-x">&times;</div>
     </div>
@@ -2565,7 +2612,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
         <em style="color:var(--red); font-style:italic;">È un vertice architetturale.</em>
       </h3>
       <p class="t-body reveal d2" style="max-width:640px; margin-bottom:32px;">
-        Il portfolio attuale del cliente comprende macchine flexo e ibride. Questa struttura di naming
+        Il vostro portfolio comprende macchine flexo e ibride. Questa struttura di naming
         è già comprensibile al mercato e già difesa nelle conversazioni di vendita. Il lancio non deve
         spiegarla — deve posizionare MASTER M5 all'interno di essa con autorevolezza.
       </p>
@@ -2596,10 +2643,10 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
       <p class="t-h4" style="margin-bottom: 8px; color: var(--text-muted);">I destinatari</p>
       <h3 class="t-h2 reveal d1" style="max-width:540px; margin-bottom: 12px;">
         Una voce.<br>
-        <em style="color:var(--red); font-style:italic;">Quattro ascolti.</em>
+        <em style="color:var(--red); font-style:italic;">Quattro ascolti con voi.</em>
       </h3>
       <p class="t-body reveal d2" style="max-width:640px; margin-bottom:32px;">
-        Il cliente ha confermato: <em>"lo stesso modo"</em> per tutti. Una verità centrale, rilevante
+        Ci avete confermato: <em>"lo stesso modo"</em> per tutti. Una verità centrale, rilevante
         per quattro tipi di interlocutore — senza campagne separate, senza messaggi in conflitto.
         Il sistema creativo di MASTERED è costruito esattamente per questo.
       </p>
@@ -2995,7 +3042,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
     <!-- Naming governance note -->
     <div class="naming-note" style="background:var(--warm);border-left:3px solid var(--red);padding:20px 24px;border-radius:0 8px 8px 0;margin:24px 0;">
       <p class="t-eyebrow" style="color:var(--red);margin-bottom:8px">Prossimo passo: clearance legale</p>
-      <p class="t-body" style="margin:0">"MASTER M5 Mark II" va verificato per conflitti trademark in DE, FR, IT, ES, US (classe IP rilevante) prima del lancio. Il processo è da avviare con il team legale del cliente in parallelo all'esecuzione creativa — e va tracciato prima che la raccomandazione diventi definitiva.</p>
+      <p class="t-body" style="margin:0">"MASTER M5 Mark II" va verificato per conflitti trademark in DE, FR, IT, ES, US (classe IP rilevante) prima del lancio. Il processo è da avviare con il vostro team legale in parallelo all'esecuzione creativa — e va tracciato prima che la raccomandazione diventi definitiva.</p>
     </div>
     <!-- ═══ PERFORMANCE EDITION + FUTURE DIRECTION ═══ -->
     <div style="margin-top: clamp(48px,6vw,72px);" class="reveal">
@@ -3011,9 +3058,9 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
         </div>
       </div>
       <div class="flexo-master-box reveal d3">
-        <span class="fmb-tag">Nota strategica cliente · confermata</span>
+        <span class="fmb-tag">Nota strategica · confermata con voi</span>
         <h4>Vincolo naming: la porta verso FLEXO MASTER</h4>
-        <p>Il cliente ha confermato che <em>"a tendere"</em> l'architettura di naming delle macchine flexo potrebbe convergere verso <strong style="color:var(--white);">FLEXO MASTER</strong> — ma solo in presenza di una macchina completamente nuova, non un restyling. Il naming di lancio del Mark II deve essere <strong style="color:var(--white);">flessibile e non preclusivo</strong>: non deve creare una struttura che impedisca questa evoluzione futura. Mark II, Performance Edition ed Evolved soddisfano tutti questo vincolo.</p>
+        <p>Ci avete confermato che <em>"a tendere"</em> l\'architettura di naming delle macchine flexo potrebbe convergere verso <strong style="color:var(--white);">FLEXO MASTER</strong> — ma solo in presenza di una macchina completamente nuova, non un restyling. Il naming di lancio del Mark II deve essere <strong style="color:var(--white);">flessibile e non preclusivo</strong>: non deve creare una struttura che impedisca questa evoluzione futura. Mark II, Performance Edition ed Evolved soddisfano tutti questo vincolo.</p>
       </div>
     </div>
 
@@ -3180,7 +3227,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
                 <div class="beat-proof">
                   <span class="label">Proof Anchor [TBC]</span>
                   <p>Specifica di accuratezza di registro. Consistenza del colore sulla lunghezza del ciclo.
-                  Devono essere recuperati dalla documentazione tecnica del cliente prima che
+                  Devono essere recuperati dalla vostra documentazione tecnica prima che
                   questo beat vada a copy finale.</p>
                 </div>
               </div>
@@ -3302,7 +3349,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
                   <span class="label">Proof Anchor [TBC]</span>
                   <p>Funzionalità di automazione specifiche aggiunte in questa versione.
                   Riduzione documentata dei passaggi di intervento manuale.
-                  Conferma del team di prodotto del cliente richiesta.</p>
+                  Conferma richiesta al vostro team di prodotto.</p>
                 </div>
               </div>
             </div>
@@ -3916,7 +3963,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
           <div class="proof-level">
             <span class="proof-level-tag l1">Livello 1 · Claim forti</span>
             <p class="t-small" style="color:rgba(255,255,255,.6);">
-              Richiedono dati documentati dal cliente: riduzione del tempo di setup,
+              Richiedono dati documentati da voi: riduzione del tempo di setup,
               specifica di accuratezza di registro (± X mm), funzionalità di automazione specifiche,
               specifiche di performance (range substrato, velocità di stampa).
             </p>
@@ -4645,7 +4692,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
     </div>
     <!-- ═══ TOUCHPOINTS CONFERMATI ═══ -->
     <div style="margin-top: clamp(48px,6vw,72px);" class="reveal">
-      <p class="t-h4" style="margin-bottom:16px;">Touchpoint confermati dal cliente</p>
+      <p class="t-h4" style="margin-bottom:16px;">Touchpoint confermati da voi</p>
       <div class="touchpoints-grid">
         <div class="tp-channel">
           <h4>Online</h4>
@@ -4701,8 +4748,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
         <p>
           <strong>Sessione 1:</strong> V1, V2, V7, V8 — determinano se entrambi i percorsi
           sono costruibili.<br><br>
-          <strong>Track parallelo (naming):</strong> V4, V5, V6 — tramite i team legali e commerciali
-          del cliente. Avviare subito, non aspettare l'approvazione della direzione creativa.<br><br>
+          <strong>Track parallelo (naming):</strong> V4, V5, V6 — tramite i vostri team legali e commerciali. Avviare subito, non aspettare l'approvazione della direzione creativa.<br><br>
           <strong>Sessione 2:</strong> V3, V9, V10, V11, V12 — raffinano l'esecuzione una volta
           confermata la rotta.
         </p>
@@ -4771,7 +4817,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
             </div>
             <p class="t-small">
               Verificare "MASTER M5 Mark II" per conflitti trademark in DE, FR, IT, ES, US
-              (classe IP rilevante). Il team legale del cliente avvia il processo;
+              (classe IP rilevante). Il vostro team legale avvia il processo;
               l'agenzia coordina e traccia l'esito prima del lancio.
             </p>
           </div>
@@ -4782,7 +4828,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
               <span class="val-status warning">Verifica richiesta</span>
             </div>
             <p class="t-small">
-              Il processo di naming del cliente consente subtitle descriptor?
+              Il vostro processo di naming consente subtitle descriptor?
               Ci sono convenzioni di catalogo distributori o designazioni di sistema ERP
               che creerebbero conflitto con "Mark II"? Se sì, le opzioni di naming fallback
               (Evolved, Precision Series) devono essere presentate.
@@ -4795,7 +4841,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
               <span class="val-status warning">Verifica richiesta</span>
             </div>
             <p class="t-small">
-              Come si riferiscono attualmente i distributori del cliente all'M5 nei loro materiali
+              Come si riferiscono attualmente i vostri distributori all'M5 nei loro materiali
               di vendita e sistemi CRM? Se stanno usando una designazione in conflitto con "Mark II"
               o "Built Further", la raccomandazione di naming deve tenere conto della transizione.
             </p>
@@ -4858,7 +4904,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
               <span class="val-status warning">Determina pesi varianti</span>
             </div>
             <p class="t-small">
-              Nei mercati primari del cliente, quale ruolo giocano gli operatori e i responsabili
+              Nei vostri mercati primari, quale ruolo giocano gli operatori e i responsabili
               di produzione nella decisione di acquisto della macchina? Influencer, specifier,
               veto-holder, o irrilevanti? La risposta determina quanto peso ricevono la Variante 02
               (Operator-led) e il Percorso B nel sistema di comunicazione finale.
@@ -4871,7 +4917,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
               <span class="val-status info">Informa il design del toolkit</span>
             </div>
             <p class="t-small">
-              Come è strutturata l'organizzazione vendite del cliente? Vendita diretta, rete
+              Come è strutturata la vostra organizzazione vendite? Vendita diretta, rete
               distributori, o ibrido? Il sistema di contenuto Five-Beat deve essere progettato
               per come i team vendite distribuiscono realmente il contenuto. Un team vendite
               diretto può essere briefato sulla logica di posizionamento. Una rete distributori
@@ -4985,10 +5031,9 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
         <div class="callout reveal d4">
           <p class="label">Quando il Percorso B diventa più forte del Percorso A</p>
           <p>
-            Se la validazione del cliente rivela miglioramenti ergonomici specifici e documentati
+            Se la vostra validazione rivela miglioramenti ergonomici specifici e documentati
             che vanno significativamente oltre il predecessore M5 — ridisegno dell'interfaccia,
-            punti di accesso, riposizionamento dei comandi — E la leadership commerciale del cliente
-            conferma che gli operatori e i responsabili di produzione sono influencer attivi nel
+            punti di accesso, riposizionamento dei comandi — E la vostra leadership commerciale conferma che gli operatori e i responsabili di produzione sono influencer attivi nel
             processo di acquisto nei loro mercati primari. Se entrambe le condizioni sono vere,
             "Built for the Press" ha un argomento di distintività più forte di MASTERED e deve
             essere portato avanti.
@@ -5042,12 +5087,12 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
             </tbody>
           </table>
         </div>
-        <p class="t-small" style="margin-top:10px; color:var(--text-muted);">* Forte solo se condizionale: strategicamente coerente solo se i miglioramenti di usabilità del cliente sono reali e dimostrabili.</p>
+        <p class="t-small" style="margin-top:10px; color:var(--text-muted);">* Forte solo se condizionale: strategicamente coerente solo se i vostri miglioramenti di usabilità sono reali e dimostrabili.</p>
 
         <div style="margin-top:20px; padding:16px; background:rgba(13,27,42,.04); border-left:2px solid var(--text-muted);">
           <p class="t-h4" style="margin-bottom:8px; font-size:10px; color:var(--text-muted);">Il confronto onesto</p>
           <p class="t-small" style="color:var(--text-body);">
-            <strong>Il Percorso A vince su:</strong> fit strategico, usabilità vendite, adattabilità globale, realismo produzione, probabilità approvazione cliente. È la raccomandazione giusta quando il cliente ha bisogno di una piattaforma di lancio affidabile e commercialmente forte.<br><br>
+            <strong>Il Percorso A vince su:</strong> fit strategico, usabilità vendite, adattabilità globale, realismo produzione, probabilità approvazione cliente. È la raccomandazione giusta quando avete bisogno di una piattaforma di lancio affidabile e commercialmente forte.<br><br>
             <strong>Il Percorso B vince su:</strong> distintività. È il suo unico vantaggio chiaro sul Percorso A — ed è reale. Se la distintività è la priorità strategica primaria e le condizioni sono soddisfatte, il Percorso B è la scommessa di posizionamento a lungo termine più forte.
           </p>
         </div>
@@ -5086,7 +5131,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
           <div style="margin-top:16px; padding:12px; background:rgba(13,27,42,.04);">
             <p class="t-small" style="color:var(--text-muted);">
               <strong>Rischio:</strong> Due nomi da mantenere consistentemente è più difficile di uno.
-              Se i team interni del cliente o i distributori iniziano a usare il moniker in modo
+              Se i vostri team interni o i distributori iniziano a usare il moniker in modo
               scorretto, il sistema si deteriora.
             </p>
           </div>
@@ -5146,7 +5191,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
           </div>
           <div style="display:flex; gap:20px; align-items:flex-start;">
             <span style="color:var(--silver); font-family:var(--sans); font-size:10px; letter-spacing:.14em; text-transform:uppercase; flex-shrink:0; margin-top:2px;">Percorso B</span>
-            <p class="t-body" style="font-size:15px; color:rgba(255,255,255,.5);">Territorio: Built for the Press · Naming: MASTER M5 / Built Further · Film: The Shift (no voiceover) · Usare se il cliente è pronto a impegnarsi per ciò che richiede.</p>
+            <p class="t-body" style="font-size:15px; color:rgba(255,255,255,.5);">Territorio: Built for the Press · Naming: MASTER M5 / Built Further · Film: The Shift (no voiceover) · Da usare se siete pronti a impegnarvi per ciò che richiede.</p>
           </div>
           <div style="display:flex; gap:20px; align-items:flex-start;">
             <span style="color:rgba(255,255,255,.2); font-family:var(--sans); font-size:10px; letter-spacing:.14em; text-transform:uppercase; flex-shrink:0; margin-top:2px;">Eliminato</span>
@@ -5408,7 +5453,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
 
   /* BUDGET EXPLORER */
   (function() {
-    var D = [{"area": "Strategia", "att": "Raccolta e analisi materiali esistenti", "desc": "Raccolta, revisione e organizzazione di materiali forniti (documentazione tecnica, presentazioni, asset precedenti, linee guida)", "figura": "Strategist / Analyst", "output": "Framework strutturato di lettura e sintesi materiali", "t1": {"ore": 2, "costo": 100}, "t2": {"ore": 2.5, "costo": 125}, "t3": {"ore": 3.0, "costo": 150}}, {"area": "Strategia", "att": "Analisi prodotto e contesto di lancio", "desc": "Analisi del prodotto, della gamma e del contesto competitivo/comunicativo in cui si inserisce il lancio", "figura": "Strategist", "output": "Documento di inquadramento strategico", "t1": {"ore": 2, "costo": 100}, "t2": {"ore": 2.5, "costo": 125}, "t3": {"ore": 3.0, "costo": 150}}, {"area": "Strategia", "att": "Strategic audit & portfolio fit", "desc": "Valutazione coerenza naming, architettura prodotto e posizionamento rispetto al portfolio esistente", "figura": "Strategist", "output": "Output di sintesi strategica e raccomandazioni", "t1": {"ore": 2, "costo": 100}, "t2": {"ore": 2.5, "costo": 125}, "t3": {"ore": 3.0, "costo": 150}}, {"area": "Strategia", "att": "Naming exploration", "desc": "Sviluppo di direttrici naming, territori semantici e possibili logiche di estensione (suffix, naming system)", "figura": "Strategist / Copywriter", "output": "Set di direzioni naming strutturate", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Strategia", "att": "Naming refinement & recommendation", "desc": "Selezione, validazione e rifinitura della proposta naming finale", "figura": "Copywriter / Strategist", "output": "Raccomandazione naming finale con motivazioni strategiche", "t1": {"ore": 4, "costo": 200}, "t2": {"ore": 5.0, "costo": 250}, "t3": {"ore": 6.0, "costo": 300}}, {"area": "Strategia", "att": "Messaging framework", "desc": "Costruzione della value proposition, messaggi chiave e pilastri di comunicazione", "figura": "Copywriter / Strategist", "output": "Messaging hierarchy completa", "t1": {"ore": 20, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Strategia", "att": "Definizione narrativa di lancio", "desc": "Traduzione dei messaggi in narrativa coerente per il lancio del prodotto", "figura": "Copywriter / Strategist", "output": "Narrativa strutturata per utilizzo cross-canale", "t1": {"ore": 20, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Strategia", "att": "Launch concept architecture", "desc": "Ideazione del concept creativo ombrello della campagna di lancio", "figura": "Creative Director / Strategist", "output": "Piattaforma concettuale di campagna", "t1": {"ore": 14, "costo": 700}, "t2": {"ore": 17.5, "costo": 875}, "t3": {"ore": 21.0, "costo": 1050}}, {"area": "Strategia", "att": "Sviluppo linee creative", "desc": "Declinazione delle prime direzioni creative coerenti con il concept", "figura": "Creative Director / Art Director", "output": "Prime ipotesi creative validate", "t1": {"ore": 14, "costo": 700}, "t2": {"ore": 17.5, "costo": 875}, "t3": {"ore": 21.0, "costo": 1050}}, {"area": "Strategia", "att": "Visual territory & moodboard", "desc": "Definizione del territorio visivo, stile, tone of voice visivo e riferimenti creativi", "figura": "Art Director", "output": "Moodboard e visual direction", "t1": {"ore": 6, "costo": 300}, "t2": {"ore": 7.5, "costo": 375}, "t3": {"ore": 9.0, "costo": 450}}, {"area": "Strategia", "att": "Revisione e affinamento strategico", "desc": "Gestione feedback e refinement su naming, concept, messaging e visual direction", "figura": "Account / Strategist", "output": "Round di revisione strategica concordati", "t1": {"ore": 6, "costo": 300}, "t2": {"ore": 7.5, "costo": 375}, "t3": {"ore": 9.0, "costo": 450}}, {"area": "Video", "att": "Scrittura script video", "desc": "Sviluppo script narrativo coerente con concept e messaging", "figura": "Copywriter / Creative Director", "output": "Script video approvabile", "t1": {"ore": 20, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Video", "att": "Storyboard e visualizzazione scene", "desc": "Traduzione dello script in storyboard con indicazioni visive e di regia", "figura": "Copywriter / Creative Director", "output": "Storyboard completo", "t1": {"ore": 20, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Video", "att": "Pianificazione produzione (pre-production)", "desc": "Organizzazione operativa shooting: scaletta, timing, setup, coordinamento risorse", "figura": "Producer / PM", "output": "Piano di produzione dettagliato", "t1": {"ore": 40, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Video", "att": "Definizione art direction", "desc": "Preparazione linee guida visive per lo shooting (inquadrature, luci, stile)", "figura": "Art Director / Creative Director", "output": "Linee guida creative per il set", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video", "att": "Shooting video spot", "desc": "Produzione del video hero con team dedicato", "figura": "Video Team / Director", "output": "Giornata/e di shooting", "t1": {"ore": 60, "costo": 3000}, "t2": {"ore": 75.0, "costo": 3750}, "t3": {"ore": 90.0, "costo": 4500}}, {"area": "Video", "att": "Supervisione creativa sul set", "desc": "Controllo coerenza tra output e concept durante la produzione", "figura": "Creative Director / Art Director", "output": "Supervisione live produzione", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video", "att": "Montaggio video master", "desc": "Editing completo del video principale (hero)", "figura": "Editor / Motion Designer", "output": "Versione master video", "t1": {"ore": 60, "costo": 3000}, "t2": {"ore": 75.0, "costo": 3750}, "t3": {"ore": 90.0, "costo": 4500}}, {"area": "Video", "att": "Motion graphics & title cards", "desc": "Realizzazione grafiche, titolazioni e insert visivi", "figura": "Motion Designer", "output": "Pacchetto grafico video", "t1": {"ore": 40, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Video", "att": "Color grading & sound design", "desc": "Base color correction e ottimizzazione audio", "figura": "Editor", "output": "Output video finalizzato", "t1": {"ore": 20, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Video", "att": "Localizzazione sottotitoli", "desc": "Creazione e adattamento sottotitoli (EFIGS base)", "figura": "Copywriter / Editor", "output": "File sottotitoli + versionamento", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video", "att": "Revisioni e fine tuning", "desc": "Gestione feedback e ottimizzazione finale", "figura": "Editor / PM", "output": "Round di revisione concordati", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video", "att": "Export e finalizzazione", "desc": "Preparazione formati finali e file consegna", "figura": "Editor", "output": "Pacchetto export finale", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Asset di lancio", "att": "Sales asset base", "desc": "Realizzazione materiale sintetico a supporto del team commerciale", "figura": "Designer / Copywriter", "output": "One-pager o asset commerciale light", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Asset di lancio", "att": "Cutdown video", "desc": "Adattamento del video master in versioni brevi per utilizzo digital", "figura": "Editor", "output": "Set di cutdown video", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Asset di lancio", "att": "Adattamenti digital base", "desc": "Adattamento asset per touchpoint digital principali", "figura": "Designer", "output": "Formati base per utilizzo digital", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Creative toolkit esteso", "desc": "Sviluppo sistema completo di asset, layout, regole visive e applicazioni multi-touchpoint", "figura": "Creative Director / Art Director / Designer", "output": "Da definire e quotare a parte per variabilità", "t1": {"ore": 32, "costo": 1600}, "t2": {"ore": 40.0, "costo": 2000}, "t3": {"ore": 48.0, "costo": 2400}}, {"area": "Contenuti", "att": "Key visual system esteso", "desc": "Sviluppo di più key visual e relative estensioni", "figura": "Art Director / Designer", "output": "Set key visual aggiuntivi", "t1": {"ore": 24, "costo": 1200}, "t2": {"ore": 30.0, "costo": 1500}, "t3": {"ore": 36.0, "costo": 1800}}, {"area": "Contenuti", "att": "Photo shooting dedicato", "desc": "Produzione fotografica prodotto / applicazioni", "figura": "Photographer / Art Director", "output": "Shooting fotografico", "t1": {"ore": 40, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Contenuti", "att": "Photo editing & post-produzione", "desc": "Ritocco, color correction e finalizzazione immagini", "figura": "Retoucher / Designer", "output": "Output fotografico finalizzato", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Open house concept", "desc": "Ideazione concept creativo per evento di lancio", "figura": "Creative Director / Designer", "output": "Concept evento", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Open house asset", "desc": "Realizzazione materiali master a supporto dell’evento", "figura": "Designer / Copywriter", "output": "Asset evento", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Open house support operativo", "desc": "Supporto alla costruzione dei materiali per l’evento", "figura": "Account / Designer / PM", "output": "Non include produzione fisica", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Contenuti", "att": "Extended adaptation pack", "desc": "Adattamenti aggiuntivi per canali, formati e touchpoint", "figura": "Designer / Editor", "output": "Pacchetto adattamenti extra", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Contenuti", "att": "Render / compositing avanzato", "desc": "Produzione visual avanzati o interventi compositing", "figura": "Designer / Motion Designer", "output": "Da valutare per complessità", "t1": {"ore": 32, "costo": 1600}, "t2": {"ore": 40.0, "costo": 2000}, "t3": {"ore": 48.0, "costo": 2400}}, {"area": "Contenuti", "att": "Localizzazioni aggiuntive", "desc": "Adattamenti linguistici oltre al perimetro base", "figura": "Copywriter / Editor", "output": "Versioni linguistiche aggiuntive", "t1": {"ore": 24, "costo": 1200}, "t2": {"ore": 30.0, "costo": 1500}, "t3": {"ore": 36.0, "costo": 1800}}, {"area": "Video Demo", "att": "Demo video — allineamento contenuti", "desc": "Definizione obiettivi, contenuti da mostrare e struttura demo", "figura": "Account / Strategist", "output": "Allineamento contenuti demo", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — raccolta materiali", "desc": "Raccolta materiali tecnici, input prodotto e flussi operativi da rappresentare", "figura": "Strategist / PM", "output": "Input strutturati per produzione", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — script tecnico", "desc": "Scrittura script orientato a spiegazione funzionale del prodotto", "figura": "Copywriter / Strategist", "output": "Script demo approvabile", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — storyboard operativo", "desc": "Definizione sequenze, inquadrature e flussi dimostrativi", "figura": "Creative Director / Video Team", "output": "Storyboard tecnico", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — pianificazione produzione", "desc": "Organizzazione shooting demo (setup, tempi, materiali)", "figura": "Producer / PM", "output": "Piano operativo demo", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — shooting demo", "desc": "Riprese dedicate alla dimostrazione del prodotto", "figura": "Video Team / Director", "output": "Giornata/e di shooting demo", "t1": {"ore": 80, "costo": 4000}, "t2": {"ore": 100.0, "costo": 5000}, "t3": {"ore": 120.0, "costo": 6000}}, {"area": "Video Demo", "att": "Demo video — supervisione tecnica", "desc": "Verifica correttezza contenuti durante riprese", "figura": "Strategist / Cliente", "output": "Supervisione contenuti", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — montaggio tecnico", "desc": "Editing orientato alla chiarezza e comprensione del prodotto", "figura": "Editor", "output": "Versione demo video", "t1": {"ore": 40, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Video Demo", "att": "Demo video — grafiche esplicative", "desc": "Inserimento elementi grafici, callout, highlight funzionali", "figura": "Motion Designer", "output": "Grafiche esplicative", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — sottotitoli e localizzazione", "desc": "Adattamento linguistico e sottotitoli", "figura": "Copywriter / Editor", "output": "File sottotitoli", "t1": {"ore": 12, "costo": 600}, "t2": {"ore": 15.0, "costo": 750}, "t3": {"ore": 18.0, "costo": 900}}, {"area": "Video Demo", "att": "Demo video — revisioni", "desc": "Gestione feedback e ottimizzazione finale", "figura": "Editor / PM", "output": "Round revisioni demo", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — export e consegna", "desc": "Finalizzazione file e consegna strutturata", "figura": "Editor", "output": "File finali demo", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Chiusura", "att": "QA & delivery finale", "desc": "Controllo qualità finale, organizzazione file e consegna strutturata", "figura": "Editor / PM", "output": "Pacchetto file ordinato e documentato", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Project Management", "att": "Gestione e coordinamento progetto", "desc": "Gestione flussi, avanzamento, coordinamento team, feedback e delivery", "figura": "Account / PM", "output": "Gestione end-to-end del progetto", "t1": {"ore": 40, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}];
+    var D = [{"area": "Strategia", "att": "Kick-off & allineamento iniziale", "desc": "Allineamento su obiettivi di business, perimetro progettuale, stakeholder coinvolti, flussi decisionali e modalità operative", "figura": "Account Director / Strategist", "output": "Riunione di kick-off + documento di recap e allineamento condiviso", "t1": {"ore": 10.0, "costo": 500}, "t2": {"ore": 12.5, "costo": 625}, "t3": {"ore": 15.0, "costo": 750}}, {"area": "Strategia", "att": "Raccolta e analisi materiali esistenti", "desc": "Raccolta, revisione e organizzazione di materiali forniti (documentazione tecnica, presentazioni, asset precedenti, linee guida)", "figura": "Strategist / Analyst", "output": "Framework strutturato di lettura e sintesi materiali", "t1": {"ore": 2.0, "costo": 100}, "t2": {"ore": 2.5, "costo": 125}, "t3": {"ore": 3.0, "costo": 150}}, {"area": "Strategia", "att": "Analisi prodotto e contesto di lancio", "desc": "Analisi del prodotto, della gamma e del contesto competitivo/comunicativo in cui si inserisce il lancio", "figura": "Strategist", "output": "Documento di inquadramento strategico", "t1": {"ore": 2.0, "costo": 100}, "t2": {"ore": 2.5, "costo": 125}, "t3": {"ore": 3.0, "costo": 150}}, {"area": "Strategia", "att": "Strategic audit & portfolio fit", "desc": "Valutazione coerenza naming, architettura prodotto e posizionamento rispetto al portfolio esistente", "figura": "Strategist", "output": "Output di sintesi strategica e raccomandazioni", "t1": {"ore": 2.0, "costo": 100}, "t2": {"ore": 2.5, "costo": 125}, "t3": {"ore": 3.0, "costo": 150}}, {"area": "Strategia", "att": "Naming exploration", "desc": "Sviluppo di direttrici naming, territori semantici e possibili logiche di estensione (suffix, naming system)", "figura": "Strategist / Copywriter", "output": "Set di direzioni naming strutturate", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Strategia", "att": "Naming refinement & recommendation", "desc": "Selezione, validazione e rifinitura della proposta naming finale", "figura": "Copywriter / Strategist", "output": "Raccomandazione naming finale con motivazioni strategiche", "t1": {"ore": 4.0, "costo": 200}, "t2": {"ore": 5.0, "costo": 250}, "t3": {"ore": 6.0, "costo": 300}}, {"area": "Strategia", "att": "Messaging framework", "desc": "Costruzione della value proposition, messaggi chiave e pilastri di comunicazione", "figura": "Copywriter / Strategist", "output": "Messaging hierarchy completa", "t1": {"ore": 20.0, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Strategia", "att": "Definizione narrativa di lancio", "desc": "Traduzione dei messaggi in narrativa coerente per il lancio del prodotto", "figura": "Copywriter / Strategist", "output": "Narrativa strutturata per utilizzo cross-canale", "t1": {"ore": 20.0, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Strategia", "att": "Launch concept architecture", "desc": "Ideazione del concept creativo ombrello della campagna di lancio", "figura": "Creative Director / Strategist", "output": "Piattaforma concettuale di campagna", "t1": {"ore": 14.0, "costo": 700}, "t2": {"ore": 17.5, "costo": 875}, "t3": {"ore": 21.0, "costo": 1050}}, {"area": "Strategia", "att": "Sviluppo linee creative", "desc": "Declinazione delle prime direzioni creative coerenti con il concept", "figura": "Creative Director / Art Director", "output": "Prime ipotesi creative validate", "t1": {"ore": 14.0, "costo": 700}, "t2": {"ore": 17.5, "costo": 875}, "t3": {"ore": 21.0, "costo": 1050}}, {"area": "Strategia", "att": "Visual territory & moodboard", "desc": "Definizione del territorio visivo, stile, tone of voice visivo e riferimenti creativi", "figura": "Art Director", "output": "Moodboard e visual direction", "t1": {"ore": 6.0, "costo": 300}, "t2": {"ore": 7.5, "costo": 375}, "t3": {"ore": 9.0, "costo": 450}}, {"area": "Strategia", "att": "Revisione e affinamento strategico", "desc": "Gestione feedback e refinement su naming, concept, messaging e visual direction", "figura": "Account / Strategist", "output": "Round di revisione strategica concordati", "t1": {"ore": 6.0, "costo": 300}, "t2": {"ore": 7.5, "costo": 375}, "t3": {"ore": 9.0, "costo": 450}}, {"area": "Video", "att": "Scrittura script video", "desc": "Sviluppo script narrativo coerente con concept e messaging", "figura": "Copywriter / Creative Director", "output": "Script video approvabile", "t1": {"ore": 20.0, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Video", "att": "Storyboard e visualizzazione scene", "desc": "Traduzione dello script in storyboard con indicazioni visive e di regia", "figura": "Copywriter / Creative Director", "output": "Storyboard completo", "t1": {"ore": 20.0, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Video", "att": "Pianificazione produzione (pre-production)", "desc": "Organizzazione operativa shooting: scaletta, timing, setup, coordinamento risorse", "figura": "Producer / PM", "output": "Piano di produzione dettagliato", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Video", "att": "Definizione art direction", "desc": "Preparazione linee guida visive per lo shooting (inquadrature, luci, stile)", "figura": "Art Director / Creative Director", "output": "Linee guida creative per il set", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video", "att": "Shooting video spot", "desc": "Produzione del video hero con team dedicato", "figura": "Video Team / Director", "output": "Giornata/e di shooting", "t1": {"ore": 60.0, "costo": 3000}, "t2": {"ore": 75.0, "costo": 3750}, "t3": {"ore": 90.0, "costo": 4500}}, {"area": "Video", "att": "Supervisione creativa sul set", "desc": "Controllo coerenza tra output e concept durante la produzione", "figura": "Creative Director / Art Director", "output": "Supervisione live produzione", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video", "att": "Montaggio video master", "desc": "Editing completo del video principale (hero)", "figura": "Editor / Motion Designer", "output": "Versione master video", "t1": {"ore": 60.0, "costo": 3000}, "t2": {"ore": 75.0, "costo": 3750}, "t3": {"ore": 90.0, "costo": 4500}}, {"area": "Video", "att": "Motion graphics & title cards", "desc": "Realizzazione grafiche, titolazioni e insert visivi", "figura": "Motion Designer", "output": "Pacchetto grafico video", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Video", "att": "Color grading & sound design", "desc": "Base color correction e ottimizzazione audio", "figura": "Editor", "output": "Output video finalizzato", "t1": {"ore": 20.0, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Video", "att": "Localizzazione sottotitoli", "desc": "Creazione e adattamento sottotitoli (EFIGS base)", "figura": "Copywriter / Editor", "output": "File sottotitoli + versionamento", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video", "att": "Revisioni e fine tuning", "desc": "Gestione feedback e ottimizzazione finale", "figura": "Editor / PM", "output": "Round di revisione concordati", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video", "att": "Export e finalizzazione", "desc": "Preparazione formati finali e file consegna", "figura": "Editor", "output": "Pacchetto export finale", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Asset di lancio", "att": "Sales asset base", "desc": "Realizzazione materiale sintetico a supporto del team commerciale", "figura": "Designer / Copywriter", "output": "One-pager o asset commerciale light", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Asset di lancio", "att": "Cutdown video", "desc": "Adattamento del video master in versioni brevi per utilizzo digital", "figura": "Editor", "output": "Set di cutdown video", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Asset di lancio", "att": "Adattamenti digital base", "desc": "Adattamento asset per touchpoint digital principali", "figura": "Designer", "output": "Formati base per utilizzo digital", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Creative toolkit esteso", "desc": "Sviluppo sistema completo di asset, layout, regole visive e applicazioni multi-touchpoint", "figura": "Creative Director / Art Director / Designer", "output": "Da definire e quotare a parte per variabilità", "t1": {"ore": 32.0, "costo": 1600}, "t2": {"ore": 40.0, "costo": 2000}, "t3": {"ore": 48.0, "costo": 2400}}, {"area": "Contenuti", "att": "Key visual system esteso", "desc": "Sviluppo di più key visual e relative estensioni", "figura": "Art Director / Designer", "output": "Set key visual aggiuntivi", "t1": {"ore": 24.0, "costo": 1200}, "t2": {"ore": 30.0, "costo": 1500}, "t3": {"ore": 36.0, "costo": 1800}}, {"area": "Contenuti", "att": "Photo shooting dedicato", "desc": "Produzione fotografica prodotto / applicazioni", "figura": "Photographer / Art Director", "output": "Shooting fotografico", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Contenuti", "att": "Photo editing & post-produzione", "desc": "Ritocco, color correction e finalizzazione immagini", "figura": "Retoucher / Designer", "output": "Output fotografico finalizzato", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Open house concept", "desc": "Ideazione concept creativo per evento di lancio", "figura": "Creative Director / Designer", "output": "Concept evento", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Open house asset", "desc": "Realizzazione materiali master a supporto dell’evento", "figura": "Designer / Copywriter", "output": "Asset evento", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Open house support operativo", "desc": "Supporto alla costruzione dei materiali per l’evento", "figura": "Account / Designer / PM", "output": "Non include produzione fisica", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Contenuti", "att": "Extended adaptation pack", "desc": "Adattamenti aggiuntivi per canali, formati e touchpoint", "figura": "Designer / Editor", "output": "Pacchetto adattamenti extra", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Contenuti", "att": "Render / compositing avanzato", "desc": "Produzione visual avanzati o interventi compositing", "figura": "Designer / Motion Designer", "output": "Da valutare per complessità", "t1": {"ore": 32.0, "costo": 1600}, "t2": {"ore": 40.0, "costo": 2000}, "t3": {"ore": 48.0, "costo": 2400}}, {"area": "Contenuti", "att": "Localizzazioni aggiuntive", "desc": "Adattamenti linguistici oltre al perimetro base", "figura": "Copywriter / Editor", "output": "Versioni linguistiche aggiuntive", "t1": {"ore": 24.0, "costo": 1200}, "t2": {"ore": 30.0, "costo": 1500}, "t3": {"ore": 36.0, "costo": 1800}}, {"area": "Video Demo", "att": "Demo video — allineamento contenuti", "desc": "Definizione obiettivi, contenuti da mostrare e struttura demo", "figura": "Account / Strategist", "output": "Allineamento contenuti demo", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — raccolta materiali", "desc": "Raccolta materiali tecnici, input prodotto e flussi operativi da rappresentare", "figura": "Strategist / PM", "output": "Input strutturati per produzione", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — script tecnico", "desc": "Scrittura script orientato a spiegazione funzionale del prodotto", "figura": "Copywriter / Strategist", "output": "Script demo approvabile", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — storyboard operativo", "desc": "Definizione sequenze, inquadrature e flussi dimostrativi", "figura": "Creative Director / Video Team", "output": "Storyboard tecnico", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — pianificazione produzione", "desc": "Organizzazione shooting demo (setup, tempi, materiali)", "figura": "Producer / PM", "output": "Piano operativo demo", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — shooting demo", "desc": "Riprese dedicate alla dimostrazione del prodotto", "figura": "Video Team / Director", "output": "Giornata/e di shooting demo", "t1": {"ore": 80.0, "costo": 4000}, "t2": {"ore": 100.0, "costo": 5000}, "t3": {"ore": 120.0, "costo": 6000}}, {"area": "Video Demo", "att": "Demo video — supervisione tecnica", "desc": "Verifica correttezza contenuti durante riprese", "figura": "Strategist / Cliente", "output": "Supervisione contenuti", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — montaggio tecnico", "desc": "Editing orientato alla chiarezza e comprensione del prodotto", "figura": "Editor", "output": "Versione demo video", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Video Demo", "att": "Demo video — grafiche esplicative", "desc": "Inserimento elementi grafici, callout, highlight funzionali", "figura": "Motion Designer", "output": "Grafiche esplicative", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — sottotitoli e localizzazione", "desc": "Adattamento linguistico e sottotitoli", "figura": "Copywriter / Editor", "output": "File sottotitoli", "t1": {"ore": 12.0, "costo": 600}, "t2": {"ore": 15.0, "costo": 750}, "t3": {"ore": 18.0, "costo": 900}}, {"area": "Video Demo", "att": "Demo video — revisioni", "desc": "Gestione feedback e ottimizzazione finale", "figura": "Editor / PM", "output": "Round revisioni demo", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — export e consegna", "desc": "Finalizzazione file e consegna strutturata", "figura": "Editor", "output": "File finali demo", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Chiusura", "att": "QA & delivery finale", "desc": "Controllo qualità finale, organizzazione file e consegna strutturata", "figura": "Editor / PM", "output": "Pacchetto file ordinato e documentato", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Project Management", "att": "Gestione e coordinamento progetto", "desc": "Gestione flussi, avanzamento, coordinamento team, feedback e delivery", "figura": "Account / PM", "output": "Gestione end-to-end del progetto", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}];
     var AREAS = [];
     D.forEach(function(d) { if (AREAS.indexOf(d.area) === -1) AREAS.push(d.area); });
     var S = D.map(function() { return 'T1'; });
@@ -5421,7 +5466,7 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
     var ftOre   = document.getElementById('bft-ore');
     var copyBtn = document.getElementById('bft-copy');
     var rstBtn  = document.getElementById('bft-rst');
-    var pBtns   = document.querySelectorAll('.bgt-p-btn');
+    var pBtns   = document.querySelectorAll('.bgt-tier-btn, .bgt-reset-btn');
     if (!overlay) return;
 
     function fmt(n) { return '€ ' + n.toLocaleString('it-IT'); }
