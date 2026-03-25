@@ -1491,9 +1491,415 @@ section { padding: clamp(80px,10vw,140px) 0; }
 .qa-item .qa-note { font-family: var(--sans); font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; margin-top: 8px; font-style: italic; border-top: 1px solid rgba(0,0,0,.07); padding-top: 8px; }
 @media(max-width:680px){ .qa-grid { grid-template-columns: 1fr; } }
 
+/* ──────────────────────────────────────────────────────────
+   RIBRAIN HEADER
+   ────────────────────────────────────────────────────────── */
+#rb-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 800;
+  height: 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px;
+  background: transparent;
+  transition: transform .35s cubic-bezier(.25,.46,.45,.94), background .3s ease;
+  pointer-events: auto;
+}
+#rb-header.scrolled { background: rgba(13,27,42,.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+#rb-header.hidden { transform: translateY(-100%); }
+.rb-logo { display: flex; align-items: center; gap: 12px; }
+.rb-logo-svg { height: 18px; width: auto; color: #fff; transition: color .3s ease; }
+#rb-header.on-light .rb-logo-svg { color: #1c1c1c; }
+.rb-sep { width: 1px; height: 16px; background: rgba(255,255,255,.2); transition: background .3s; }
+#rb-header.on-light .rb-sep { background: rgba(0,0,0,.12); }
+.rb-tag { font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.5); transition: color .3s; }
+#rb-header.on-light .rb-tag { color: rgba(0,0,0,.35); }
+.rb-right { font-size: 10px; color: rgba(255,255,255,.4); letter-spacing: .06em; transition: color .3s; }
+.rb-right strong { color: rgba(255,255,255,.7); font-weight: 600; }
+#rb-header.on-light .rb-right { color: rgba(0,0,0,.3); }
+#rb-header.on-light .rb-right strong { color: rgba(0,0,0,.55); }
+
+/* ──────────────────────────────────────────────────────────
+   MANAGER PANEL — SLIDE-IN
+   ────────────────────────────────────────────────────────── */
+#mgr-toggle {
+  position: fixed;
+  bottom: 28px; right: 28px;
+  z-index: 900;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--navy);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 12px 20px;
+  border-radius: 6px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.35);
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+}
+#mgr-toggle:hover { background: #1a2d42; transform: translateY(-2px); }
+#mgr-toggle .mgr-diamond { color: var(--red); font-size: 14px; }
+body.mgr-open #mgr-toggle { opacity: 0; pointer-events: none; }
+
+/* Panel */
+#mgr-panel {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: min(460px, 92vw);
+  z-index: 950;
+  background: var(--cream);
+  border-left: 2px solid var(--red);
+  transform: translateX(100%);
+  transition: transform .45s cubic-bezier(.25,.46,.45,.94);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-shadow: -8px 0 40px rgba(0,0,0,.15);
+}
+body.mgr-open #mgr-panel { transform: translateX(0); }
+
+/* Backdrop */
+#mgr-backdrop {
+  position: fixed; inset: 0;
+  z-index: 940;
+  background: rgba(13,27,42,.45);
+  backdrop-filter: blur(4px);
+  opacity: 0; pointer-events: none;
+  transition: opacity .35s ease;
+}
+body.mgr-open #mgr-backdrop { opacity: 1; pointer-events: auto; }
+
+/* Panel inner */
+.mgr-head {
+  position: sticky; top: 0; z-index: 2;
+  background: var(--navy);
+  padding: 20px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 2px solid var(--red);
+}
+.mgr-head-title {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: #fff;
+  letter-spacing: -.01em;
+}
+.mgr-head-title em { color: var(--red); font-style: normal; }
+.mgr-close {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.mgr-close:hover { background: rgba(255,255,255,.15); }
+
+.mgr-body { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+
+/* KPI row */
+.mgr-kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.mgr-kpi {
+  background: var(--navy);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+.mgr-kpi-val {
+  font-family: var(--serif);
+  font-size: 28px;
+  color: #fff;
+  line-height: 1;
+}
+.mgr-kpi-val span { font-family: var(--sans); font-size: 14px; font-weight: 700; color: var(--red); }
+.mgr-kpi-lbl {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(255,255,255,.4);
+  margin-top: 6px;
+}
+
+/* Section card */
+.mgr-card {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.07);
+  border-radius: 8px;
+  padding: 18px 20px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.mgr-card-num {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--red);
+}
+.mgr-card h4 {
+  font-family: var(--serif);
+  font-size: 15px; font-weight: 400;
+  color: var(--navy);
+  line-height: 1.25;
+}
+.mgr-card p {
+  font-size: 12px; color: var(--text-muted);
+  line-height: 1.55;
+}
+.mgr-card .mgr-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--red);
+  margin-top: 4px;
+  cursor: pointer;
+  transition: color .2s;
+}
+.mgr-card .mgr-link:hover { color: var(--red-lt); }
+
+/* Dark card */
+.mgr-card.dark {
+  background: var(--navy);
+  border-color: transparent;
+}
+.mgr-card.dark h4 { color: #fff; }
+.mgr-card.dark p { color: rgba(255,255,255,.55); }
+
+/* Beat pills */
+.mgr-beats { display: flex; flex-wrap: wrap; gap: 6px; }
+.mgr-beat-pill {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: .06em;
+  padding: 5px 12px;
+  border-radius: 100px;
+  background: var(--warm);
+  color: var(--navy);
+  border: 1px solid rgba(0,0,0,.06);
+}
+.mgr-beat-pill:first-child { background: var(--navy); color: #fff; }
+
+/* Timeline */
+.mgr-timeline { display: flex; flex-direction: column; gap: 0; position: relative; padding-left: 20px; }
+.mgr-timeline::before {
+  content: '';
+  position: absolute; left: 6px; top: 4px; bottom: 4px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--red), var(--navy));
+}
+.mgr-tl-item { display: flex; align-items: flex-start; gap: 14px; padding: 8px 0; position: relative; }
+.mgr-tl-dot {
+  position: absolute; left: -20px; top: 12px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--red);
+  border: 2px solid var(--cream);
+  box-shadow: 0 0 0 2px var(--red);
+  flex-shrink: 0;
+}
+.mgr-tl-item.milestone .mgr-tl-dot { background: var(--navy); box-shadow: 0 0 0 2px var(--navy); }
+.mgr-tl-date {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--navy);
+  min-width: 60px;
+  flex-shrink: 0;
+}
+.mgr-tl-text { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+/* Reco banner */
+.mgr-reco {
+  background: var(--navy);
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.mgr-reco::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 3px;
+  background: var(--red);
+}
+.mgr-reco-label {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 8px;
+}
+.mgr-reco h4 {
+  font-family: var(--serif);
+  font-size: 18px; font-style: italic;
+  color: #fff;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+.mgr-reco p {
+  font-size: 12px;
+  color: rgba(255,255,255,.5);
+  line-height: 1.6;
+}
+.mgr-reco-items { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.mgr-reco-tag {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 100px;
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.6);
+}
+
+/* Footer */
+.mgr-foot {
+  padding: 16px 24px;
+  text-align: center;
+  border-top: 1px solid rgba(0,0,0,.06);
+}
+.mgr-foot-logo { height: 14px; width: auto; margin: 0 auto 6px; color: var(--text-muted); }
+.mgr-foot-txt { font-size: 10px; color: var(--text-faint); letter-spacing: .06em; }
+
 </style>
 </head>
 <body>
+
+<!-- ═══ RIBRAIN HEADER ═══ -->
+<header id="rb-header">
+  <div class="rb-logo">
+    <svg class="rb-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 146.741 33.299"><g transform="translate(0 0)"><g transform="translate(0 0)"><path d="M11.363,32.139a13.045,13.045,0,0,1,.321-2.977,6.478,6.478,0,0,1,1.077-2.4,5.25,5.25,0,0,1,1.992-1.627,6.949,6.949,0,0,1,3.023-.594,11.733,11.733,0,0,1,1.236.068c.427.046.795.1,1.1.16V18.72a5.062,5.062,0,0,0-1.42-.229,7.743,7.743,0,0,0-2.383.366,8.792,8.792,0,0,0-2.152,1.03,8.065,8.065,0,0,0-1.786,1.6,7.976,7.976,0,0,0-1.237,2.038h-.092v-4.4H4.859V35.089h6.5Z" transform="translate(-2.656 -10.109)" fill="currentColor"/><rect width="6.503" height="15.957" transform="translate(20.989 9.023)" fill="currentColor"/><path d="M170.115,34.567a2.927,2.927,0,0,1,.849-.985,4.288,4.288,0,0,1,1.238-.619,11.768,11.768,0,0,1,1.442-.367c.519-.091,1.036-.165,1.556-.228s1.015-.138,1.489-.229a10.518,10.518,0,0,0,1.328-.342,2.917,2.917,0,0,0,1.031-.573V33.65a12.677,12.677,0,0,1-.11,1.438h6.614V25.222a5.7,5.7,0,0,0-.962-3.458,6.594,6.594,0,0,0-2.473-2.039,11.143,11.143,0,0,0-3.345-.984,26.568,26.568,0,0,0-3.617-.252,19.791,19.791,0,0,0-3.914.389,11.185,11.185,0,0,0-3.507,1.3,7.8,7.8,0,0,0-2.564,2.427,7.557,7.557,0,0,0-1.145,3.8h6.5a3.68,3.68,0,0,1,1.285-2.75" transform="translate(-89.312 -10.108)" fill="currentColor"/><rect width="6.503" height="15.957" transform="translate(100.316 9.023)" fill="currentColor"/><path d="M250.93,30.4q0-3.619,1.191-5.2a4.509,4.509,0,0,1,3.849-1.582,3.551,3.551,0,0,1,3.252,1.442,8.311,8.311,0,0,1,.916,4.375v5.651h6.5V28.246a19.069,19.069,0,0,0-.389-4.007,7.631,7.631,0,0,0-1.351-3.069,6.373,6.373,0,0,0-2.632-1.969,11.076,11.076,0,0,0-4.284-.709,9.269,9.269,0,0,0-4.031.939,7.457,7.457,0,0,0-3.206,3h-.136v-3.3h-6.184V35.088h6.5Z" transform="translate(-133.622 -10.108)" fill="currentColor"/><rect width="6.504" height="7.723" transform="translate(0 24.98)" fill="currentColor"/><rect width="6.504" height="7.724" transform="translate(124.313 24.98)" fill="currentColor"/><rect width="6.502" height="7.723" transform="translate(108.604 24.98)" fill="currentColor"/><path d="M310.523,55.1a3.861,3.861,0,1,0,3.861,3.862,3.862,3.862,0,0,0-3.861-3.862" transform="translate(-167.643 -30.124)" fill="#45ffd7"/></g></g></svg>
+    <div class="rb-sep"></div>
+    <span class="rb-tag">Studio</span>
+  </div>
+  <div class="rb-right"><strong>BOBST Label</strong> · Proposta Strategica · 2026</div>
+</header>
+
+<!-- ═══ MANAGER PANEL — SLIDE-IN ═══ -->
+<button id="mgr-toggle" aria-label="Apri Manager View">
+  <span class="mgr-diamond">◆</span> Manager View
+</button>
+
+<div id="mgr-backdrop" aria-hidden="true"></div>
+
+<div id="mgr-panel" role="dialog" aria-label="Manager View">
+  <div class="mgr-head">
+    <div class="mgr-head-title">◆ <em>Manager</em> View</div>
+    <button class="mgr-close" aria-label="Chiudi">&times;</button>
+  </div>
+
+  <div class="mgr-body">
+
+    <!-- KPI -->
+    <div class="mgr-kpi-row">
+      <div class="mgr-kpi">
+        <div class="mgr-kpi-val">5<span>beat</span></div>
+        <div class="mgr-kpi-lbl">Pilastri Messaggio</div>
+      </div>
+      <div class="mgr-kpi">
+        <div class="mgr-kpi-val">2<span>rotte</span></div>
+        <div class="mgr-kpi-lbl">Percorsi Strategici</div>
+      </div>
+      <div class="mgr-kpi">
+        <div class="mgr-kpi-val">1<span>rec</span></div>
+        <div class="mgr-kpi-lbl">Raccomandazione</div>
+      </div>
+    </div>
+
+    <!-- Territorio -->
+    <div class="mgr-card dark">
+      <div class="mgr-card-num">Territorio</div>
+      <h4 style="font-size:20px; font-style:italic;">MASTERED</h4>
+      <p>Non uno slogan — una piattaforma strategica. La lente attraverso cui si sviluppa ogni elemento comunicativo del lancio Mark II. Dal primo ciclo. Ad ogni turno.</p>
+      <a class="mgr-link" data-goto="territorio">Vai alla sezione →</a>
+    </div>
+
+    <!-- Naming -->
+    <div class="mgr-card">
+      <div class="mgr-card-num">Naming</div>
+      <h4>MASTER M5 Mark II</h4>
+      <p>Continuità di famiglia (MASTER) + salto generazionale (MARK II). Denominazione ingegneristica che i decisori industriali comprendono istintivamente.</p>
+      <a class="mgr-link" data-goto="nome">Vai alla sezione →</a>
+    </div>
+
+    <!-- 5 Beats -->
+    <div class="mgr-card">
+      <div class="mgr-card-num">Sistema Narrativo</div>
+      <h4>Five-Beat System</h4>
+      <div class="mgr-beats">
+        <span class="mgr-beat-pill">01 Arrivo</span>
+        <span class="mgr-beat-pill">02 Precisione</span>
+        <span class="mgr-beat-pill">03 Ergonomia</span>
+        <span class="mgr-beat-pill">04 Automazione</span>
+        <span class="mgr-beat-pill">05 Il Risultato</span>
+      </div>
+      <p style="margin-top:6px">Cinque blocchi narrativi che strutturano tutta la comunicazione — dal film alla sales deck, ogni touchpoint segue lo stesso arco.</p>
+      <a class="mgr-link" data-goto="beats">Vai alla sezione →</a>
+    </div>
+
+    <!-- Headlines -->
+    <div class="mgr-card">
+      <div class="mgr-card-num">Headlines Top</div>
+      <h4 style="font-style:italic;">"MASTER M5 Mark II. Mastered."</h4>
+      <p><strong>Alt:</strong> "MASTERED. Dal primo ciclo." · "Portato oltre. In ogni modo che conta."</p>
+      <a class="mgr-link" data-goto="headlines">Vai alla sezione →</a>
+    </div>
+
+    <!-- Film -->
+    <div class="mgr-card">
+      <div class="mgr-card-num">Film</div>
+      <h4>"The Shift"</h4>
+      <p>Film istituzionale strutturato sui 5 beat. Approccio documentaristico-industriale con estetica da cinema di precisione. Voce fuori campo di un operatore reale.</p>
+      <a class="mgr-link" data-goto="film">Vai alla sezione →</a>
+    </div>
+
+    <!-- Timeline -->
+    <div class="mgr-card">
+      <div class="mgr-card-num">Roadmap</div>
+      <h4>Timeline di Lancio</h4>
+      <div class="mgr-timeline">
+        <div class="mgr-tl-item">
+          <div class="mgr-tl-dot"></div>
+          <div class="mgr-tl-date">Apr '26</div>
+          <div class="mgr-tl-text">Kick-off & Creative Development</div>
+        </div>
+        <div class="mgr-tl-item">
+          <div class="mgr-tl-dot"></div>
+          <div class="mgr-tl-date">Mag–Giu</div>
+          <div class="mgr-tl-text">Produzione Film + Asset Design</div>
+        </div>
+        <div class="mgr-tl-item milestone">
+          <div class="mgr-tl-dot"></div>
+          <div class="mgr-tl-date">Lug '26</div>
+          <div class="mgr-tl-text">Open House Firenze</div>
+        </div>
+        <div class="mgr-tl-item">
+          <div class="mgr-tl-dot"></div>
+          <div class="mgr-tl-date">Ago '26</div>
+          <div class="mgr-tl-text">Digital Go-Live & Social Campaign</div>
+        </div>
+        <div class="mgr-tl-item milestone">
+          <div class="mgr-tl-dot"></div>
+          <div class="mgr-tl-date">Set '26</div>
+          <div class="mgr-tl-text">Labelexpo Americas — Lancio Pubblico</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Raccomandazione -->
+    <div class="mgr-reco">
+      <div class="mgr-reco-label">Raccomandazione Finale</div>
+      <h4>Percorso A: MASTERED</h4>
+      <p>Non stiamo cercando di far sembrare più nuovo. Stiamo costruendo il caso per cui è migliore — in un linguaggio che un responsabile di produzione, un buyer e un rep vendite possono tutti usare.</p>
+      <div class="mgr-reco-items">
+        <span class="mgr-reco-tag">Territorio: MASTERED</span>
+        <span class="mgr-reco-tag">Naming: MASTER M5 Mark II</span>
+        <span class="mgr-reco-tag">Film: The Shift</span>
+        <span class="mgr-reco-tag">Sistema: Five-Beat</span>
+      </div>
+      <a class="mgr-link" style="color:rgba(255,255,255,.6); margin-top:12px" data-goto="chiusura">Vai alla chiusura →</a>
+    </div>
+
+  </div>
+
+  <!-- Panel footer -->
+  <div class="mgr-foot">
+    <svg class="mgr-foot-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 146.741 33.299"><g transform="translate(0 0)"><g transform="translate(0 0)"><path d="M11.363,32.139a13.045,13.045,0,0,1,.321-2.977,6.478,6.478,0,0,1,1.077-2.4,5.25,5.25,0,0,1,1.992-1.627,6.949,6.949,0,0,1,3.023-.594,11.733,11.733,0,0,1,1.236.068c.427.046.795.1,1.1.16V18.72a5.062,5.062,0,0,0-1.42-.229,7.743,7.743,0,0,0-2.383.366,8.792,8.792,0,0,0-2.152,1.03,8.065,8.065,0,0,0-1.786,1.6,7.976,7.976,0,0,0-1.237,2.038h-.092v-4.4H4.859V35.089h6.5Z" transform="translate(-2.656 -10.109)" fill="currentColor"/><rect width="6.503" height="15.957" transform="translate(20.989 9.023)" fill="currentColor"/><path d="M250.93,30.4q0-3.619,1.191-5.2a4.509,4.509,0,0,1,3.849-1.582,3.551,3.551,0,0,1,3.252,1.442,8.311,8.311,0,0,1,.916,4.375v5.651h6.5V28.246a19.069,19.069,0,0,0-.389-4.007,7.631,7.631,0,0,0-1.351-3.069,6.373,6.373,0,0,0-2.632-1.969,11.076,11.076,0,0,0-4.284-.709,9.269,9.269,0,0,0-4.031.939,7.457,7.457,0,0,0-3.206,3h-.136v-3.3h-6.184V35.088h6.5Z" transform="translate(-133.622 -10.108)" fill="currentColor"/><rect width="6.504" height="7.723" transform="translate(0 24.98)" fill="currentColor"/><rect width="6.504" height="7.724" transform="translate(124.313 24.98)" fill="currentColor"/><rect width="6.502" height="7.723" transform="translate(108.604 24.98)" fill="currentColor"/><path d="M310.523,55.1a3.861,3.861,0,1,0,3.861,3.862,3.862,3.862,0,0,0-3.861-3.862" transform="translate(-167.643 -30.124)" fill="#45ffd7"/></g></g></svg>
+    <div class="mgr-foot-txt">Ribrain Studio · Confidenziale</div>
+  </div>
+</div>
 
 <!-- Custom cursor -->
 <div id="cursor-dot"></div>
@@ -4553,6 +4959,61 @@ section { padding: clamp(80px,10vw,140px) 0; }
   window.addEventListener('resize', () => {
     document.querySelectorAll('.beat-item.open .beat-body').forEach(body => {
       body.style.maxHeight = body.scrollHeight + 'px';
+    });
+  });
+
+  /* ─── RIBRAIN HEADER ──────────────────────────────────────── */
+  const rbH = document.getElementById('rb-header');
+  if (rbH) {
+    let lastY = 0;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (y > lastY + 6 && y > 80) rbH.classList.add('hidden');
+      else if (y < lastY - 4) rbH.classList.remove('hidden');
+      if (y > 60) rbH.classList.add('scrolled');
+      else rbH.classList.remove('scrolled');
+      /* detect light sections */
+      const coverH = document.getElementById('cover')?.offsetHeight || 0;
+      const hit = document.elementFromPoint(window.innerWidth / 2, 50);
+      const sec = hit?.closest('section');
+      if (sec && (sec.classList.contains('s-light') || sec.classList.contains('s-warm'))) {
+        rbH.classList.add('on-light');
+      } else {
+        rbH.classList.remove('on-light');
+      }
+      lastY = y;
+    }, { passive: true });
+  }
+
+  /* ─── MANAGER PANEL ───────────────────────────────────────── */
+  const mgrToggle   = document.getElementById('mgr-toggle');
+  const mgrPanel    = document.getElementById('mgr-panel');
+  const mgrBackdrop = document.getElementById('mgr-backdrop');
+  const mgrClose    = mgrPanel?.querySelector('.mgr-close');
+
+  function openMgr()  { document.body.classList.add('mgr-open'); }
+  function closeMgr() { document.body.classList.remove('mgr-open'); }
+
+  if (mgrToggle)   mgrToggle.addEventListener('click', openMgr);
+  if (mgrClose)    mgrClose.addEventListener('click', closeMgr);
+  if (mgrBackdrop) mgrBackdrop.addEventListener('click', closeMgr);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.body.classList.contains('mgr-open')) closeMgr();
+  });
+
+  /* "Vai alla sezione" links inside panel */
+  mgrPanel?.querySelectorAll('[data-goto]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const id = link.getAttribute('data-goto');
+      const target = document.getElementById(id);
+      if (target) {
+        closeMgr();
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 350);
+      }
     });
   });
 
