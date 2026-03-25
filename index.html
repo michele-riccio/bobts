@@ -1503,9 +1503,9 @@ section { padding: clamp(80px,10vw,140px) 0; }
 #rb-header.hidden { transform: translateY(-100%); }
 .rb-logo { display: flex; align-items: center; gap: 12px; }
 .rb-logo-img {
-  height: 44px;
+  height: 54px;
   width: auto;
-  margin: -10px 0;
+  margin: -13px 0;
   display: block;
   object-fit: contain;
 }
@@ -1519,17 +1519,7 @@ section { padding: clamp(80px,10vw,140px) 0; }
 #rb-header.on-light .rb-right { color: rgba(0,0,0,.3); }
 #rb-header.on-light .rb-right strong { color: rgba(0,0,0,.55); }
 
-/* ── COVER LOGO ─────────────────────────────────────────────── */
-.cover-rb-logo {
-  display: block;
-  width: 140px;
-  height: 32px;
-  object-fit: cover;
-  object-position: center 30%;
-  margin-bottom: 32px;
-  opacity: 0;
-  animation: fadeUp .8s var(--ease) .2s forwards;
-}
+
 
 /* ── FIXED BUTTONS ──────────────────────────────────────────── */
 #mgr-toggle {
@@ -1718,6 +1708,166 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
 .bft-rst { font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 10px 14px; border-radius: 5px; background: transparent; color: rgba(255,255,255,.4); border: 1.5px solid rgba(255,255,255,.12); cursor: pointer; transition: all .2s; }
 .bft-rst:hover { border-color: rgba(255,255,255,.4); color: rgba(255,255,255,.7); }
 
+
+/* ── SECTION 0: GUIDA ALLA LETTURA ─────────────────────────── */
+#guida {
+  background: var(--navy);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: clamp(80px,12vw,120px) 0;
+}
+.guida-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 clamp(24px,5vw,80px);
+}
+.guida-label {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 24px;
+}
+.guida-headline {
+  font-family: var(--serif);
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.2;
+  max-width: 700px;
+  margin-bottom: 16px;
+}
+.guida-sub {
+  font-family: var(--sans);
+  font-size: clamp(14px,1.4vw,16px);
+  color: rgba(255,255,255,.5);
+  line-height: 1.7;
+  max-width: 620px;
+  margin-bottom: 56px;
+}
+.guida-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 48px;
+}
+.guida-col {
+  background: rgba(13,27,42,.8);
+  padding: 28px 28px 32px;
+}
+.guida-col-num {
+  font-family: var(--serif);
+  font-size: 36px;
+  color: rgba(255,255,255,.08);
+  margin-bottom: 8px;
+  line-height: 1;
+}
+.guida-col-title {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 12px;
+}
+.guida-col-body {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: rgba(255,255,255,.6);
+  line-height: 1.65;
+}
+.guida-sections-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 48px;
+}
+.guida-sec-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.1);
+  font-family: var(--sans);
+  font-size: 11px;
+  color: rgba(255,255,255,.5);
+  cursor: pointer;
+  transition: all .2s;
+  text-decoration: none;
+}
+.guida-sec-chip:hover {
+  border-color: rgba(255,255,255,.3);
+  color: #fff;
+  background: rgba(255,255,255,.05);
+}
+.guida-sec-chip .chip-num {
+  font-size: 9px;
+  color: var(--red);
+  font-weight: 700;
+}
+.guida-tools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 56px;
+}
+.guida-tool-card {
+  padding: 20px 22px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  background: rgba(255,255,255,.02);
+}
+.guida-tool-icon {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+.guida-tool-name {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.guida-tool-desc {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: rgba(255,255,255,.5);
+  line-height: 1.55;
+}
+.guida-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: var(--red);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity .2s;
+  border: none;
+}
+.guida-cta:hover { opacity: .85; }
+@media (max-width: 768px) {
+  .guida-grid { grid-template-columns: 1fr; }
+  .guida-tools { grid-template-columns: 1fr; }
+}
+
 </style>
 </head>
 <body>
@@ -1740,69 +1890,279 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
 <!-- MANAGER PANEL -->
 <div id="mgr-backdrop"></div>
 <div id="mgr-panel" role="dialog">
-  <div class="mgr-head"><div class="mgr-head-title">◆ <em>Manager</em> View</div><button class="mgr-close">&times;</button></div>
-  <div class="mgr-body">
-    <div class="mgr-kpi-row">
-      <div class="mgr-kpi"><div class="mgr-kpi-val">5<span>beat</span></div><div class="mgr-kpi-lbl">Pilastri</div></div>
-      <div class="mgr-kpi"><div class="mgr-kpi-val">2<span>vie</span></div><div class="mgr-kpi-lbl">Percorsi</div></div>
-      <div class="mgr-kpi"><div class="mgr-kpi-val">1<span>rec</span></div><div class="mgr-kpi-lbl">Raccomandazione</div></div>
+  <div class="mgr-head">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="color:var(--red);font-size:14px;">◆</span>
+      <span style="font-family:var(--serif);font-size:16px;font-weight:400;color:#fff;letter-spacing:.02em;">Manager View</span>
     </div>
-    <div class="mgr-card dark">
-      <div class="mgr-card-num">Territorio</div>
-      <h4 style="font-size:20px;font-style:italic;">MASTERED</h4>
-      <p>Non uno slogan — una piattaforma strategica. La lente attraverso cui si sviluppa ogni elemento del lancio Mark II.</p>
-      <a class="mgr-link" data-goto="territorio">Vai alla sezione →</a>
+    <button class="mgr-close" aria-label="Chiudi">×</button>
+  </div>
+
+  <!-- KPI STRIP -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid rgba(255,255,255,.07);padding:0;">
+    <div style="padding:16px 18px;border-right:1px solid rgba(255,255,255,.07);">
+      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px;">Percorso</div>
+      <div style="font-family:var(--serif);font-size:20px;color:#fff;">A</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;">Raccomandato</div>
     </div>
-    <div class="mgr-card">
-      <div class="mgr-card-num">Naming</div><h4>MASTER M5 Mark II</h4>
-      <p>Continuità di famiglia + salto generazionale. Denominazione che i decisori industriali comprendono istintivamente.</p>
-      <a class="mgr-link" data-goto="nome">Vai alla sezione →</a>
+    <div style="padding:16px 18px;border-right:1px solid rgba(255,255,255,.07);">
+      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px;">Pilastri</div>
+      <div style="font-family:var(--serif);font-size:20px;color:#fff;">5</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;">Beat narrativi</div>
     </div>
-    <div class="mgr-card">
-      <div class="mgr-card-num">Sistema Narrativo</div><h4>Five-Beat System</h4>
-      <div class="mgr-beats">
-        <span class="mgr-beat-pill">01 Arrivo</span><span class="mgr-beat-pill">02 Precisione</span>
-        <span class="mgr-beat-pill">03 Ergonomia</span><span class="mgr-beat-pill">04 Automazione</span>
-        <span class="mgr-beat-pill">05 Il Risultato</span>
-      </div>
-      <a class="mgr-link" data-goto="beats">Vai alla sezione →</a>
-    </div>
-    <div class="mgr-card">
-      <div class="mgr-card-num">Headline top</div>
-      <h4 style="font-style:italic;">"MASTER M5 Mark II. Mastered."</h4>
-      <p>Alt: "MASTERED. Dal primo ciclo." · "Portato oltre. In ogni modo che conta."</p>
-      <a class="mgr-link" data-goto="headlines">Vai alla sezione →</a>
-    </div>
-    <div class="mgr-card">
-      <div class="mgr-card-num">Film</div><h4>"The Shift"</h4>
-      <p>Film istituzionale sui 5 beat. Approccio documentaristico-industriale. Voce di un operatore reale.</p>
-      <a class="mgr-link" data-goto="film">Vai alla sezione →</a>
-    </div>
-    <div class="mgr-card">
-      <div class="mgr-card-num">Roadmap</div><h4>Timeline Lancio</h4>
-      <div class="mgr-timeline">
-        <div class="mgr-tl-item"><div class="mgr-tl-dot"></div><div class="mgr-tl-date">Apr '26</div><div class="mgr-tl-text">Kick-off & Creative Dev</div></div>
-        <div class="mgr-tl-item"><div class="mgr-tl-dot"></div><div class="mgr-tl-date">Mag–Giu</div><div class="mgr-tl-text">Produzione Film + Asset</div></div>
-        <div class="mgr-tl-item milestone"><div class="mgr-tl-dot"></div><div class="mgr-tl-date">Lug '26</div><div class="mgr-tl-text">Open House Firenze</div></div>
-        <div class="mgr-tl-item milestone"><div class="mgr-tl-dot"></div><div class="mgr-tl-date">Set '26</div><div class="mgr-tl-text">Labelexpo Americas — Lancio</div></div>
-      </div>
-    </div>
-    <div class="mgr-reco">
-      <div class="mgr-reco-label">Raccomandazione Finale</div>
-      <h4>Percorso A: MASTERED</h4>
-      <p>Non stiamo cercando di far sembrare più nuovo. Stiamo costruendo il caso per cui è migliore — in un linguaggio che responsabile di produzione, buyer e rep vendite possono tutti usare.</p>
-      <div class="mgr-reco-items">
-        <span class="mgr-reco-tag">Territorio: MASTERED</span>
-        <span class="mgr-reco-tag">Film: The Shift</span>
-        <span class="mgr-reco-tag">Sistema: Five-Beat</span>
-      </div>
-      <a class="mgr-link" style="color:rgba(255,255,255,.6);margin-top:12px" data-goto="chiusura">Vai alla chiusura →</a>
+    <div style="padding:16px 18px;">
+      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px;">Vie</div>
+      <div style="font-family:var(--serif);font-size:20px;color:#fff;">2</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;">Percorsi presentati</div>
     </div>
   </div>
-  <div class="mgr-foot"><div class="mgr-foot-txt">Ribrain Studio · Confidenziale · Marzo 2026</div></div>
-</div>
 
-<!-- BUDGET EXPLORER -->
+  <div class="mgr-body">
+
+    <!-- TERRITORIO -->
+    <div class="mgr-card">
+      <div class="mgr-card-label">Territorio Creativo</div>
+      <div class="mgr-card-title">MASTERED.</div>
+      <div class="mgr-card-text">
+        Una parola sola che trasforma una macchina da stampa in un argomento di business. <strong>MASTERED</strong> non descrive il prodotto — descrive il risultato che il cliente ottiene. Funziona perché opera su tre livelli simultanei:
+      </div>
+      <div style="margin:12px 0;display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <span style="color:var(--red);font-size:11px;margin-top:1px;flex-shrink:0;">01</span>
+          <span style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5;"><strong style="color:#fff;font-weight:500;">Tecnico</strong> — Mastered come padronanza del processo di stampa. Precisione, ripetibilità, zero sprechi.</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <span style="color:var(--red);font-size:11px;margin-top:1px;flex-shrink:0;">02</span>
+          <span style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5;"><strong style="color:#fff;font-weight:500;">Operativo</strong> — Mastered come operatore che non ha bisogno di supervisione. L'autonomia come risultato.</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <span style="color:var(--red);font-size:11px;margin-top:1px;flex-shrink:0;">03</span>
+          <span style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5;"><strong style="color:#fff;font-weight:500;">Business</strong> — Mastered come azienda che ha eliminato una variabile critica dal suo P&amp;L.</span>
+        </div>
+      </div>
+      <div style="background:rgba(192,57,43,.12);border-left:2px solid var(--red);padding:10px 12px;border-radius:0 4px 4px 0;margin-top:10px;">
+        <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--red);margin-bottom:4px;">Rischio presidito</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.6);line-height:1.5;">Diventa vuoto senza risposta a "Mastered in cosa?". Il Five-Beat System è la risposta strutturata a questa domanda.</div>
+      </div>
+      <button class="mgr-link" data-goto="territorio">Vai alla sezione →</button>
+    </div>
+
+    <!-- NAMING -->
+    <div class="mgr-card">
+      <div class="mgr-card-label">Naming</div>
+      <div class="mgr-card-title">MASTER M5 Mark II</div>
+      <div class="mgr-card-text">
+        Il nome è costruito su tre livelli che si rafforzano a vicenda, lavorando simultaneamente per acquirenti tecnici, responsabili di produzione e rep vendite:
+      </div>
+      <div style="margin:12px 0;display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <span style="font-size:10px;letter-spacing:.06em;color:var(--red);flex-shrink:0;margin-top:2px;">MASTER</span>
+          <span style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5;">Continuità di linea — il cliente riconosce la famiglia di prodotto. Nessuna rottura con l'esistente.</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <span style="font-size:10px;letter-spacing:.06em;color:var(--red);flex-shrink:0;margin-top:2px;">M5</span>
+          <span style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5;">Identificativo tecnico preciso. Funziona nei cataloghi, nei CRM, nelle conversazioni distributori senza ambiguità.</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <span style="font-size:10px;letter-spacing:.06em;color:var(--red);flex-shrink:0;margin-top:2px;">MARK II</span>
+          <span style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5;">Salto generazionale senza upgrade incrementale. Il linguaggio aeronautico/militare porta autorità ingegneristica — segnala discontinuità senza romperla.</span>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);padding:10px 12px;border-radius:6px;margin-top:8px;">
+        <div style="font-size:10px;color:rgba(255,255,255,.35);margin-bottom:4px;">Perché non le alternative</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.5;">Le opzioni di fallback (M5 PRO, M5 NEXT, M5 ULTRA) descrivono caratteristiche. Mark II descrive una generazione. Solo una di queste diventa un argomento di vendita.</div>
+      </div>
+      <button class="mgr-link" data-goto="nome">Vai alla sezione →</button>
+    </div>
+
+    <!-- FIVE-BEAT -->
+    <div class="mgr-card">
+      <div class="mgr-card-label">Sistema Narrativo</div>
+      <div class="mgr-card-title">Five-Beat System</div>
+      <div class="mgr-card-text">
+        Il sistema narrativo che trasforma feature tecniche in argomenti di business. Ogni beat corrisponde a un momento dell'esperienza operativa — e a un'obiezione di vendita silenziosa da smontare:
+      </div>
+      <div style="margin:12px 0;display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 10px;background:rgba(255,255,255,.04);border-radius:6px;">
+          <span style="color:var(--red);font-size:11px;font-weight:600;flex-shrink:0;min-width:18px;">01</span>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:#fff;letter-spacing:.05em;text-transform:uppercase;">Arrivo</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">Setup immediato. La macchina è operativa prima di quanto il cliente si aspetti — il tempo zero è un vantaggio competitivo.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 10px;background:rgba(255,255,255,.04);border-radius:6px;">
+          <span style="color:var(--red);font-size:11px;font-weight:600;flex-shrink:0;min-width:18px;">02</span>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:#fff;letter-spacing:.05em;text-transform:uppercase;">Precisione</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">Registrazione di colore controllata. Il claim non è "stampa bene" — è "ogni ciclo è uguale al precedente". Prevedibilità come asset.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 10px;background:rgba(255,255,255,.04);border-radius:6px;">
+          <span style="color:var(--red);font-size:11px;font-weight:600;flex-shrink:0;min-width:18px;">03</span>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:#fff;letter-spacing:.05em;text-transform:uppercase;">Ergonomia</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">Interfaccia che un operatore impara in un turno. Riduce dipendenza da specialisti, riduce errori umani, estende la vita operativa della macchina.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 10px;background:rgba(255,255,255,.04);border-radius:6px;">
+          <span style="color:var(--red);font-size:11px;font-weight:600;flex-shrink:0;min-width:18px;">04</span>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:#fff;letter-spacing:.05em;text-transform:uppercase;">Automazione</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">Cicli automatizzati che eliminano decisioni manuali ripetitive. Il valore non è la tecnologia — è il tempo recuperato per ciò che conta.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 10px;background:rgba(255,255,255,.04);border-radius:6px;">
+          <span style="color:var(--red);font-size:11px;font-weight:600;flex-shrink:0;min-width:18px;">05</span>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:#fff;letter-spacing:.05em;text-transform:uppercase;">Il Risultato</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">Il close narrativo: l'operatore che fa un passo indietro, osserva il ciclo, e non interviene. MASTERED. Non come promessa — come fatto.</div>
+          </div>
+        </div>
+      </div>
+      <button class="mgr-link" data-goto="beats">Vai alla sezione →</button>
+    </div>
+
+    <!-- HEADLINE + TOV -->
+    <div class="mgr-card">
+      <div class="mgr-card-label">Headline di Lancio</div>
+      <div class="mgr-card-title">"MASTER M5 Mark II.<br>Mastered."</div>
+      <div class="mgr-card-text">
+        Due frasi. Zero aggettivi. La prima crea identità, la seconda crea posizione. La struttura è deliberata: il punto fermo dopo "Mastered" chiude il cerchio aperto dal Mark II — la macchina non è "avanzata", è <em>conclusa</em>.
+      </div>
+      <div style="margin:10px 0;display:flex;flex-direction:column;gap:6px;">
+        <div style="padding:8px 12px;background:rgba(255,255,255,.04);border-radius:6px;">
+          <div style="font-size:10px;color:rgba(255,255,255,.3);margin-bottom:3px;">Alternativa 1</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.7);font-style:italic;">"MASTERED. Dal primo ciclo."</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;">Più operativa. Funziona meglio su supporti tecnici e demo video.</div>
+        </div>
+        <div style="padding:8px 12px;background:rgba(255,255,255,.04);border-radius:6px;">
+          <div style="font-size:10px;color:rgba(255,255,255,.3);margin-bottom:3px;">Alternativa 2</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.7);font-style:italic;">"Portato oltre. In ogni modo che conta."</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;">Più istituzionale. Adatta a comunicazione corporate e press kit.</div>
+        </div>
+      </div>
+      <button class="mgr-link" data-goto="headlines">Vai alla sezione →</button>
+    </div>
+
+    <!-- FILM -->
+    <div class="mgr-card">
+      <div class="mgr-card-label">Film Istituzionale</div>
+      <div class="mgr-card-title">"The Shift"</div>
+      <div class="mgr-card-text">
+        Un film da 90–120" che non vende la macchina — documenta il cambiamento che produce. L'approccio è documentaristico-industriale: riprese reali, operatore reale, nessun attore. La voce è quella di chi lavora con la macchina ogni giorno.
+      </div>
+      <div style="margin:10px 0;display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;gap:8px;">
+          <span style="color:var(--red);font-size:10px;margin-top:2px;flex-shrink:0;">▸</span>
+          <span style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.5;"><strong style="color:#fff;font-weight:500;">Struttura</strong> — Segue i 5 beat narrativi. Ogni beat è un momento visivo distinto, non una voiceover descrittiva.</span>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <span style="color:var(--red);font-size:10px;margin-top:2px;flex-shrink:0;">▸</span>
+          <span style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.5;"><strong style="color:#fff;font-weight:500;">Distribuzione</strong> — Versione full (lancio Labelexpo), cut 30" (fiera + digitale), loop 15" (stand/screen).</span>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <span style="color:var(--red);font-size:10px;margin-top:2px;flex-shrink:0;">▸</span>
+          <span style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.5;"><strong style="color:#fff;font-weight:500;">Regia</strong> — Due direzioni visive proposte: <em>Precision & Silence</em> (minimalista, macro, industria come arte) vs <em>Human First</em> (calore operativo, storia umana, B2B con empatia).</span>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <span style="color:var(--red);font-size:10px;margin-top:2px;flex-shrink:0;">▸</span>
+          <span style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.5;"><strong style="color:#fff;font-weight:500;">Raccomandazione</strong> — Hybrid: partenza Precision & Silence, chiusura Human First. Il dato tecnico apre, l'umano chiude.</span>
+        </div>
+      </div>
+      <button class="mgr-link" data-goto="film">Vai alla sezione →</button>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="mgr-card">
+      <div class="mgr-card-label">Roadmap di Lancio</div>
+      <div class="mgr-card-title" style="font-size:15px;">Apr '26 → Set '26</div>
+      <div style="margin:14px 0;display:flex;flex-direction:column;gap:0;">
+        <div class="mgr-tl-item">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0;">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--red);"></div>
+            <div style="width:1px;height:100%;min-height:32px;background:rgba(255,255,255,.1);"></div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--red);letter-spacing:.08em;text-transform:uppercase;">Apr 2026</div>
+            <div style="font-size:12px;color:#fff;font-weight:500;margin-top:2px;">Kick-off & Creative Development</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">Allineamento strategico, brief di produzione, avvio verifica trademark. 4 settimane.</div>
+          </div>
+        </div>
+        <div class="mgr-tl-item">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0;">
+            <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);"></div>
+            <div style="width:1px;height:100%;min-height:32px;background:rgba(255,255,255,.1);"></div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase;">Mag–Giu 2026</div>
+            <div style="font-size:12px;color:#fff;font-weight:500;margin-top:2px;">Produzione Film + Asset di Lancio</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">Shooting, montaggio, visual identity, sales toolkit. Output: tutti i materiali pronti per Firenze.</div>
+          </div>
+        </div>
+        <div class="mgr-tl-item">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0;">
+            <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);"></div>
+            <div style="width:1px;height:100%;min-height:32px;background:rgba(255,255,255,.1);"></div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase;">Lug 2026</div>
+            <div style="font-size:12px;color:#fff;font-weight:500;margin-top:2px;">Open House Firenze</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">Primo lancio controllato. Pubblico: distributori chiave e clienti strategici. Test narrativo in condizioni reali.</div>
+          </div>
+        </div>
+        <div class="mgr-tl-item" style="padding-bottom:0;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0;">
+            <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);"></div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase;">Set 2026</div>
+            <div style="font-size:12px;color:#fff;font-weight:500;margin-top:2px;">Labelexpo Americas — Lancio Ufficiale</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">Lancio globale. Tutti i materiali attivati. Film in loop sullo stand. Sales deck operativo per il team commerciale.</div>
+          </div>
+        </div>
+      </div>
+      <button class="mgr-link" data-goto="routeb">Vai alla sezione →</button>
+    </div>
+
+    <!-- RACCOMANDAZIONE FINALE -->
+    <div class="mgr-card" style="background:rgba(192,57,43,.08);border-color:rgba(192,57,43,.2);">
+      <div class="mgr-card-label" style="color:var(--red);">Raccomandazione Finale</div>
+      <div class="mgr-card-title">Percorso A: MASTERED</div>
+      <div class="mgr-card-text" style="margin-bottom:12px;">
+        L'argomento non è che il Percorso A sia "più creativo". È che è l'unico che costruisce qualcosa che rimane dopo il lancio.
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin:12px 0;">
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <span style="color:var(--red);flex-shrink:0;font-size:13px;">→</span>
+          <span style="font-size:12px;color:rgba(255,255,255,.75);line-height:1.5;">Un territorio (<em>MASTERED</em>) che il team vendite può usare come linguaggio comune con buyer tecnici, responsabili di produzione e management.</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <span style="color:var(--red);flex-shrink:0;font-size:13px;">→</span>
+          <span style="font-size:12px;color:rgba(255,255,255,.75);line-height:1.5;">Un sistema narrativo (Five-Beat) che struttura qualsiasi conversazione di vendita in 5 argomenti verificabili — non opinioni, fatti dimostrabili.</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <span style="color:var(--red);flex-shrink:0;font-size:13px;">→</span>
+          <span style="font-size:12px;color:rgba(255,255,255,.75);line-height:1.5;">Un nome (Mark II) che posiziona il prodotto come generazione, non come upgrade — segnala agli acquirenti che la decisione è diversa questa volta.</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <span style="color:var(--red);flex-shrink:0;font-size:13px;">→</span>
+          <span style="font-size:12px;color:rgba(255,255,255,.75);line-height:1.5;">Un film (The Shift) che non ha bisogno di un presenter per funzionare — gira da solo su uno stand a Labelexpo e racconta tutto.</span>
+        </div>
+      </div>
+      <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:12px;margin-top:4px;">
+        <div style="font-size:11px;color:rgba(255,255,255,.35);line-height:1.6;">
+          Percorso B (PRECISION ENGINEERED) è solido e difendibile. Ma descrive cosa fa la macchina. MASTERED descrive cosa diventa chi la usa. In B2B capital equipment, la seconda posizione è più difficile da copiare.
+        </div>
+      </div>
+      <button class="mgr-link" data-goto="chiusura" style="margin-top:14px;">Vai alla chiusura →</button>
+    </div>
+
+  </div><!-- /mgr-body -->
+  <div style="padding:14px 24px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-size:10px;color:rgba(255,255,255,.2);letter-spacing:.06em;">Ribrain Studio · Confidenziale · Marzo 2026</span>
+    <span style="font-size:10px;color:rgba(255,255,255,.2);">7 sezioni</span>
+  </div>
+</div>
 <div id="bgt-overlay" role="dialog">
   <div id="bgt-bar">
     <div class="bgt-bar-title">€ <em>Preventivo</em> Interattivo</div>
@@ -1919,7 +2279,6 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
   <div class="cover-ghost" id="coverGhost" aria-hidden="true">M5</div>
 
   <div class="cover-inner">
-    <img class="cover-rb-logo" src="https://i.ibb.co/Lhx0Rk7n/logo-rib-bianco.png" alt="Ribrain Studio" loading="eager">
     <p class="cover-eyebrow">Proposta Strategico-Creativa &nbsp;·&nbsp; Percorso A &nbsp;·&nbsp; Marzo 2026</p>
 
     <h1 class="cover-title" id="heroTitle" aria-label="MASTERED">
@@ -1979,6 +2338,100 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
 <!-- ═══════════════════════════════════════════════════════════
      §2  LETTURA DEL BRIEF
      ═══════════════════════════════════════════════════════════ -->
+
+<!-- ══════════════════════════════════════════════════════════
+     SECTION 0 — GUIDA ALLA LETTURA
+══════════════════════════════════════════════════════════ -->
+<section id="guida" data-nav="guida">
+  <div class="guida-wrap">
+
+    <p class="guida-label reveal">Come leggere questo documento</p>
+
+    <h1 class="guida-headline reveal d1">
+      Non è una presentazione.<br>
+      È un argomento costruito sezione per sezione.
+    </h1>
+    <p class="guida-sub reveal d2">
+      Questo documento è una proposta strategico-creativa interattiva. Non va sfogliata in diagonale — va seguita nell'ordine in cui è costruita. Ogni sezione porta avanti un argomento che la precedente ha preparato. Qui sotto trovi la logica del racconto.
+    </p>
+
+    <!-- 3 COLONNE: COME È STRUTTURATO / COME SI NAVIGA / COSA TROVATE -->
+    <div class="guida-grid reveal d3">
+      <div class="guida-col">
+        <div class="guida-col-num">01</div>
+        <div class="guida-col-title">La struttura</div>
+        <div class="guida-col-body">
+          Il documento ha <strong style="color:#fff;">16 sezioni</strong> organizzate in un arco narrativo preciso: parte dalla lettura del brief, costruisce il territorio strategico, propone naming e sistema narrativo, sviluppa l'esecuzione creativa, e chiude con la raccomandazione e il preventivo.<br><br>
+          Non si può capire la sezione 8 senza aver letto la sezione 2. L'ordine è intenzionale.
+        </div>
+      </div>
+      <div class="guida-col">
+        <div class="guida-col-num">02</div>
+        <div class="guida-col-title">Come navigare</div>
+        <div class="guida-col-body">
+          Si scorre verticalmente come una pagina web. Non ci sono click obbligatori — tutto è visibile nel flusso. Alcuni elementi sono interattivi: i <strong style="color:#fff;">beat narrativi</strong> si aprono al click, la <strong style="color:#fff;">timeline di regia</strong> è esplorabile.<br><br>
+          In basso a destra trovate due strumenti di supporto — Manager View e Preventivo — descritti più avanti.
+        </div>
+      </div>
+      <div class="guida-col">
+        <div class="guida-col-num">03</div>
+        <div class="guida-col-title">La logica del racconto</div>
+        <div class="guida-col-body">
+          Il documento risponde a una domanda precisa: <em style="color:rgba(255,255,255,.8);">"Perché questa è la strategia giusta per MASTER M5 Mark II?"</em><br><br>
+          Non presenta opzioni equivalenti. Presenta una raccomandazione e mostra il ragionamento che la giustifica. Il Percorso B è incluso per trasparenza — ma la tesi è chiara.
+        </div>
+      </div>
+    </div>
+
+    <!-- MAPPA SEZIONI -->
+    <p class="guida-label reveal" style="margin-bottom:16px;">Mappa del documento</p>
+    <div class="guida-sections-row reveal d1">
+      <a class="guida-sec-chip" data-goto="brief"><span class="chip-num">01</span> Brief</a>
+      <a class="guida-sec-chip" data-goto="territorio"><span class="chip-num">02</span> Territorio</a>
+      <a class="guida-sec-chip" data-goto="nome"><span class="chip-num">03</span> Naming</a>
+      <a class="guida-sec-chip" data-goto="beats"><span class="chip-num">04</span> Five-Beat System</a>
+      <a class="guida-sec-chip" data-goto="headlines"><span class="chip-num">05</span> Headlines</a>
+      <a class="guida-sec-chip" data-goto="tov"><span class="chip-num">06</span> Tone of Voice</a>
+      <a class="guida-sec-chip" data-goto="sales"><span class="chip-num">07</span> Abilitazione Vendite</a>
+      <a class="guida-sec-chip" data-goto="film"><span class="chip-num">08</span> Film Istituzionale</a>
+      <a class="guida-sec-chip" data-goto="videodir"><span class="chip-num">09</span> Direzione di Regia</a>
+      <a class="guida-sec-chip" data-goto="visual"><span class="chip-num">10</span> Visual Identity</a>
+      <a class="guida-sec-chip" data-goto="toolkit"><span class="chip-num">11</span> Toolkit</a>
+      <a class="guida-sec-chip" data-goto="valida"><span class="chip-num">12</span> Validazione</a>
+      <a class="guida-sec-chip" data-goto="alignment"><span class="chip-num">13</span> Allineamento</a>
+      <a class="guida-sec-chip" data-goto="routeb"><span class="chip-num">14–15</span> Percorso B</a>
+      <a class="guida-sec-chip" data-goto="chiusura"><span class="chip-num">16</span> Chiusura</a>
+    </div>
+
+    <!-- TOOL CARDS -->
+    <p class="guida-label reveal" style="margin-bottom:16px;">Strumenti in basso a destra</p>
+    <div class="guida-tools reveal d2">
+      <div class="guida-tool-card">
+        <div class="guida-tool-icon">◆</div>
+        <div class="guida-tool-name">Manager View</div>
+        <div class="guida-tool-desc">
+          Pannello di sintesi executive. Contiene il riassunto dell'intera proposta — territorio, naming, sistema narrativo, film, timeline e raccomandazione finale — condensata in una vista unica. Utile per chi vuole una lettura ad alta quota prima di entrare nel dettaglio.
+        </div>
+      </div>
+      <div class="guida-tool-card">
+        <div class="guida-tool-icon">€</div>
+        <div class="guida-tool-name">Preventivo Interattivo</div>
+        <div class="guida-tool-desc">
+          Explorer del preventivo in formato tabella. Permette di selezionare voce per voce il livello di investimento (T1 / T2 / T3) e comporre il proprio scope personalizzato. Il totale si aggiorna in tempo reale. Si può copiare negli appunti con un click.
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA INIZIA -->
+    <div class="reveal d3">
+      <button class="guida-cta" id="guida-start-btn">
+        Inizia la presentazione &nbsp;→
+      </button>
+    </div>
+
+  </div>
+</section>
+
 <section id="brief" class="s-light" data-nav="brief">
   <div class="wrap">
     <p class="sec-label reveal">01 · Lettura del Brief</p>
@@ -5086,6 +5539,25 @@ body.bgt-open #bgt-foot { transform: translateY(0); }
     });
 
     render();
+  })();
+
+
+  /* GUIDA ALLA LETTURA — section chips + start button */
+  (function() {
+    document.querySelectorAll('.guida-sec-chip[data-goto]').forEach(function(chip) {
+      chip.addEventListener('click', function(e) {
+        e.preventDefault();
+        var t = document.getElementById(chip.dataset.goto);
+        if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+    var startBtn = document.getElementById('guida-start-btn');
+    if (startBtn) {
+      startBtn.addEventListener('click', function() {
+        var brief = document.getElementById('brief');
+        if (brief) brief.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
   })();
 
 })();
