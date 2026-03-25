@@ -1492,810 +1492,359 @@ section { padding: clamp(80px,10vw,140px) 0; }
 @media(max-width:680px){ .qa-grid { grid-template-columns: 1fr; } }
 
 
-/* ──────────────────────────────────────────────────────────
-   BUDGET EXPLORER — FULL SCREEN OVERLAY
-   ────────────────────────────────────────────────────────── */
-
-/* Second button next to Manager View */
-#budget-toggle {
-  position: fixed;
-  bottom: 28px; right: 188px;
-  z-index: 900;
-  display: flex; align-items: center; gap: 8px;
-  background: var(--cream);
-  color: var(--navy);
-  border: 1.5px solid var(--navy);
-  font-family: var(--sans);
-  font-size: 11px; font-weight: 600;
-  letter-spacing: .1em; text-transform: uppercase;
-  padding: 12px 20px; border-radius: 6px;
-  box-shadow: 0 4px 24px rgba(0,0,0,.18);
-  cursor: pointer;
-  transition: background .2s, color .2s, transform .2s;
-}
-#budget-toggle:hover { background: var(--navy); color: #fff; transform: translateY(-2px); }
-#budget-toggle .bgt-icon { font-size: 13px; color: var(--red); }
-body.bgt-open #budget-toggle { opacity: 0; pointer-events: none; }
-body.mgr-open #budget-toggle { opacity: 0; pointer-events: none; }
-
-/* Full overlay */
-#bgt-overlay {
-  position: fixed; inset: 0;
-  z-index: 960;
-  background: var(--cream);
-  display: flex; flex-direction: column;
-  transform: translateY(100%);
-  transition: transform .45s cubic-bezier(.25,.46,.45,.94);
-}
-body.bgt-open #bgt-overlay { transform: translateY(0); }
-
-/* Top bar */
-#bgt-bar {
-  background: var(--navy);
-  height: 56px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 28px;
-  border-bottom: 2px solid var(--red);
-}
-.bgt-bar-title {
-  font-family: var(--serif);
-  font-size: 16px; color: #fff;
-  display: flex; align-items: center; gap: 10px;
-}
-.bgt-bar-title em { color: var(--red); font-style: normal; }
-.bgt-bar-subtitle { font-size: 11px; color: rgba(255,255,255,.4); letter-spacing: .08em; margin-left: 4px; }
-.bgt-close {
-  width: 36px; height: 36px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 50%; background: rgba(255,255,255,.08);
-  color: #fff; font-size: 18px; cursor: pointer;
-  transition: background .2s;
-}
-.bgt-close:hover { background: rgba(255,255,255,.15); }
-
-/* Area tabs */
-#bgt-tabs {
-  background: var(--navy);
-  display: flex; align-items: center;
-  padding: 0 28px; gap: 4px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  overflow-x: auto;
-  flex-shrink: 0;
-}
-#bgt-tabs::-webkit-scrollbar { display: none; }
-.bgt-tab {
-  font-family: var(--sans);
-  font-size: 10px; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase;
-  padding: 12px 16px;
-  color: rgba(255,255,255,.35);
-  border-bottom: 2px solid transparent;
-  cursor: pointer; white-space: nowrap;
-  transition: color .2s, border-color .2s;
-}
-.bgt-tab:hover { color: rgba(255,255,255,.7); }
-.bgt-tab.active { color: #fff; border-bottom-color: var(--red); }
-.bgt-tab .bgt-tab-total {
-  display: inline-block;
-  margin-left: 6px; padding: 2px 7px;
-  border-radius: 100px;
-  background: rgba(255,255,255,.08);
-  font-size: 9px; font-weight: 700;
-  transition: background .2s, color .2s;
-}
-.bgt-tab.has-selection .bgt-tab-total {
-  background: var(--red); color: #fff;
-}
-
-/* Main content area */
-#bgt-main {
-  flex: 1; display: flex; overflow: hidden;
-}
-
-/* Items list */
-#bgt-list {
-  flex: 1; overflow-y: auto;
-  padding: 20px 24px;
-  display: flex; flex-direction: column; gap: 10px;
-}
-#bgt-list::-webkit-scrollbar { width: 4px; }
-#bgt-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 2px; }
-
-/* Item card */
-.bgt-item {
-  background: #fff;
-  border: 1px solid rgba(0,0,0,.07);
-  border-radius: 8px;
-  padding: 16px 18px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  transition: border-color .2s, box-shadow .2s;
-}
-.bgt-item.selected {
-  border-color: var(--red);
-  box-shadow: 0 0 0 1px var(--red), 0 2px 12px rgba(192,57,43,.1);
-}
-.bgt-item.deselected { opacity: .45; }
-.bgt-item-left { display: flex; flex-direction: column; gap: 4px; }
-.bgt-item-name {
-  font-size: 13px; font-weight: 600;
-  color: var(--navy); line-height: 1.3;
-}
-.bgt-item-desc {
-  font-size: 11px; color: var(--text-muted);
-  line-height: 1.5; margin-top: 2px;
-}
-.bgt-item-meta {
-  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;
-}
-.bgt-meta-pill {
-  font-size: 9px; font-weight: 600;
-  letter-spacing: .08em; text-transform: uppercase;
-  padding: 3px 9px; border-radius: 100px;
-  background: var(--warm); color: var(--text-muted);
-}
-.bgt-item-output {
-  font-size: 10px; font-style: italic;
-  color: var(--text-faint); margin-top: 4px; line-height: 1.4;
-}
-
-/* Tier selector */
-.bgt-tiers {
-  display: flex; flex-direction: column; gap: 6px;
-  align-items: flex-end; flex-shrink: 0;
-}
-.bgt-tier-btns {
-  display: flex; gap: 4px;
-}
-.bgt-tier-btn {
-  font-family: var(--sans);
-  font-size: 10px; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase;
-  padding: 6px 11px;
-  border-radius: 4px;
-  border: 1.5px solid rgba(0,0,0,.1);
-  background: transparent; color: var(--text-muted);
-  cursor: pointer;
-  transition: all .18s;
-}
-.bgt-tier-btn:hover { border-color: var(--red); color: var(--red); }
-.bgt-tier-btn.active { background: var(--navy); border-color: var(--navy); color: #fff; }
-.bgt-tier-btn.off-btn { border-color: rgba(0,0,0,.06); }
-.bgt-tier-btn.off-btn.active { background: rgba(0,0,0,.08); border-color: rgba(0,0,0,.15); color: var(--text-muted); }
-.bgt-item-cost {
-  font-family: var(--serif);
-  font-size: 17px; color: var(--navy);
-  text-align: right; white-space: nowrap;
-}
-.bgt-item-cost.deselected-cost { text-decoration: line-through; color: var(--text-faint); }
-.bgt-item-ore {
-  font-size: 9px; color: var(--text-faint);
-  text-align: right; letter-spacing: .06em;
-}
-
-/* Right sidebar — La tua selezione */
-#bgt-sidebar {
-  width: 300px; flex-shrink: 0;
-  border-left: 1px solid rgba(0,0,0,.08);
-  background: var(--warm);
-  display: flex; flex-direction: column;
-  overflow: hidden;
-}
-.bgt-sidebar-head {
-  padding: 18px 20px 14px;
-  border-bottom: 1px solid rgba(0,0,0,.07);
-}
-.bgt-sidebar-head h3 {
-  font-family: var(--serif);
-  font-size: 15px; font-weight: 400; color: var(--navy);
-}
-.bgt-sidebar-head p {
-  font-size: 10px; color: var(--text-muted);
-  letter-spacing: .06em; margin-top: 2px;
-}
-#bgt-sel-list {
-  flex: 1; overflow-y: auto;
-  padding: 12px 20px;
-  display: flex; flex-direction: column; gap: 6px;
-}
-#bgt-sel-list::-webkit-scrollbar { width: 3px; }
-#bgt-sel-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,.1); }
-.bgt-sel-group { margin-bottom: 4px; }
-.bgt-sel-group-label {
-  font-size: 9px; font-weight: 700; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--red);
-  margin-bottom: 4px; margin-top: 8px;
-}
-.bgt-sel-row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  font-size: 11px; padding: 3px 0;
-  border-bottom: 1px solid rgba(0,0,0,.04);
-  gap: 8px;
-}
-.bgt-sel-row-name { color: var(--text-body); flex: 1; line-height: 1.3; }
-.bgt-sel-row-tier {
-  font-size: 9px; font-weight: 700; letter-spacing: .08em;
-  color: var(--red); flex-shrink: 0;
-}
-.bgt-sel-row-cost {
-  font-size: 11px; font-weight: 600; color: var(--navy);
-  flex-shrink: 0; font-variant-numeric: tabular-nums;
-}
-.bgt-empty-msg {
-  text-align: center; padding: 32px 16px;
-  font-size: 12px; color: var(--text-faint);
-  line-height: 1.6;
-}
-
-/* Sidebar footer */
-#bgt-sidebar-foot {
-  border-top: 2px solid var(--navy);
-  padding: 16px 20px;
-  background: var(--warm);
-}
-.bgt-total-row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  margin-bottom: 14px;
-}
-.bgt-total-lbl {
-  font-size: 10px; font-weight: 700; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--navy);
-}
-.bgt-total-val {
-  font-family: var(--serif);
-  font-size: 26px; color: var(--navy); line-height: 1;
-}
-.bgt-ore-total {
-  font-size: 10px; color: var(--text-muted);
-  margin-top: 2px; text-align: right;
-}
-.bgt-actions { display: flex; gap: 8px; margin-top: 12px; }
-.bgt-btn-copy {
-  flex: 1;
-  font-family: var(--sans);
-  font-size: 11px; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase;
-  padding: 10px 14px;
-  background: var(--navy); color: #fff;
-  border-radius: 5px; cursor: pointer;
-  transition: background .2s;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-}
-.bgt-btn-copy:hover { background: #1a2d42; }
-.bgt-btn-copy.copied { background: #27ae60; }
-.bgt-btn-reset {
-  font-family: var(--sans);
-  font-size: 10px; font-weight: 600;
-  letter-spacing: .08em; text-transform: uppercase;
-  padding: 10px 12px;
-  background: transparent; color: var(--text-muted);
-  border: 1.5px solid rgba(0,0,0,.12);
-  border-radius: 5px; cursor: pointer;
-  transition: all .2s;
-}
-.bgt-btn-reset:hover { border-color: var(--red); color: var(--red); }
-
-/* Preset row */
-.bgt-preset-row {
-  display: flex; gap: 6px; margin-bottom: 12px;
-  padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,.07);
-}
-.bgt-preset-btn {
-  flex: 1;
-  font-size: 9px; font-weight: 700; letter-spacing: .08em;
-  text-transform: uppercase; padding: 7px 6px;
-  border-radius: 4px; cursor: pointer;
-  border: 1.5px solid rgba(0,0,0,.1);
-  background: transparent; color: var(--text-muted);
-  transition: all .2s; text-align: center;
-}
-.bgt-preset-btn:hover { border-color: var(--navy); color: var(--navy); }
-.bgt-preset-btn.pactive { background: var(--navy); color: #fff; border-color: var(--navy); }
-
-@media (max-width: 768px) {
-  #bgt-sidebar { display: none; }
-  #bgt-tabs { padding: 0 16px; }
-  #bgt-list { padding: 16px; }
-}
-
-
-/* ──────────────────────────────────────────────────────────
-   RIBRAIN HEADER
-   ────────────────────────────────────────────────────────── */
+/* ── RIBRAIN HEADER ────────────────────────────────────────── */
 #rb-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 800;
-  height: 48px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 28px;
-  background: transparent;
-  transition: transform .35s cubic-bezier(.25,.46,.45,.94), background .3s ease;
-  pointer-events: auto;
+  height: 48px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px; background: transparent;
+  transition: transform .35s cubic-bezier(.25,.46,.45,.94), background .3s;
 }
-#rb-header.scrolled { background: rgba(13,27,42,.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+#rb-header.scrolled { background: rgba(13,27,42,.92); backdrop-filter: blur(12px); }
 #rb-header.hidden { transform: translateY(-100%); }
 .rb-logo { display: flex; align-items: center; gap: 12px; }
-.rb-logo-svg { height: 18px; width: auto; color: #fff; transition: color .3s ease; }
-#rb-header.on-light .rb-logo-svg { color: #1c1c1c; }
-.rb-sep { width: 1px; height: 16px; background: rgba(255,255,255,.2); transition: background .3s; }
+.rb-logo-img {
+  height: 44px;
+  width: auto;
+  margin: -10px 0;
+  display: block;
+  object-fit: contain;
+}
+#rb-header.on-light .rb-logo-img { filter: brightness(0); }
+.rb-sep { width: 1px; height: 16px; background: rgba(255,255,255,.2); }
 #rb-header.on-light .rb-sep { background: rgba(0,0,0,.12); }
-.rb-tag { font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.5); transition: color .3s; }
+.rb-tag { font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.5); }
 #rb-header.on-light .rb-tag { color: rgba(0,0,0,.35); }
-.rb-right { font-size: 10px; color: rgba(255,255,255,.4); letter-spacing: .06em; transition: color .3s; }
+.rb-right { font-size: 10px; color: rgba(255,255,255,.4); letter-spacing: .06em; }
 .rb-right strong { color: rgba(255,255,255,.7); font-weight: 600; }
 #rb-header.on-light .rb-right { color: rgba(0,0,0,.3); }
 #rb-header.on-light .rb-right strong { color: rgba(0,0,0,.55); }
 
-/* ──────────────────────────────────────────────────────────
-   MANAGER PANEL — SLIDE-IN
-   ────────────────────────────────────────────────────────── */
+/* ── COVER LOGO ─────────────────────────────────────────────── */
+.cover-rb-logo {
+  display: block;
+  width: 140px;
+  height: 32px;
+  object-fit: cover;
+  object-position: center 30%;
+  margin-bottom: 32px;
+  opacity: 0;
+  animation: fadeUp .8s var(--ease) .2s forwards;
+}
+
+/* ── FIXED BUTTONS ──────────────────────────────────────────── */
 #mgr-toggle {
-  position: fixed;
-  bottom: 28px; right: 28px;
-  z-index: 900;
+  position: fixed; bottom: 28px; right: 28px; z-index: 900;
   display: flex; align-items: center; gap: 8px;
-  background: var(--navy);
-  color: #fff;
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  padding: 12px 20px;
-  border-radius: 6px;
-  box-shadow: 0 4px 24px rgba(0,0,0,.35);
-  cursor: pointer;
-  transition: background .2s, transform .2s;
+  background: var(--navy); color: #fff;
+  font-family: var(--sans); font-size: 11px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 12px 20px; border-radius: 6px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.35); cursor: pointer;
+  transition: background .2s, transform .2s, opacity .2s;
 }
 #mgr-toggle:hover { background: #1a2d42; transform: translateY(-2px); }
-#mgr-toggle .mgr-diamond { color: var(--red); font-size: 14px; }
-body.mgr-open #mgr-toggle { opacity: 0; pointer-events: none; }
+#mgr-toggle .mgr-diamond { color: var(--red-lt); font-size: 13px; }
+body.mgr-open #mgr-toggle, body.bgt-open #mgr-toggle { opacity: 0; pointer-events: none; }
 
-/* Panel */
+#budget-toggle {
+  position: fixed; bottom: 28px; right: 188px; z-index: 900;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--cream); color: var(--navy); border: 1.5px solid var(--navy);
+  font-family: var(--sans); font-size: 11px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 11px 20px; border-radius: 6px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.15); cursor: pointer;
+  transition: background .2s, color .2s, transform .2s, opacity .2s;
+}
+#budget-toggle:hover { background: var(--navy); color: #fff; transform: translateY(-2px); }
+#budget-toggle .bgt-euro { color: var(--red); font-weight: 800; }
+body.bgt-open #budget-toggle, body.mgr-open #budget-toggle { opacity: 0; pointer-events: none; }
+
+/* ── MANAGER PANEL ──────────────────────────────────────────── */
 #mgr-panel {
-  position: fixed;
-  top: 0; right: 0; bottom: 0;
-  width: min(460px, 92vw);
-  z-index: 950;
-  background: var(--cream);
-  border-left: 2px solid var(--red);
-  transform: translateX(100%);
-  transition: transform .45s cubic-bezier(.25,.46,.45,.94);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  box-shadow: -8px 0 40px rgba(0,0,0,.15);
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(460px,92vw); z-index: 950;
+  background: var(--cream); border-left: 2px solid var(--red);
+  transform: translateX(100%); transition: transform .45s cubic-bezier(.25,.46,.45,.94);
+  overflow-y: auto; overscroll-behavior: contain; box-shadow: -8px 0 40px rgba(0,0,0,.15);
 }
 body.mgr-open #mgr-panel { transform: translateX(0); }
-
-/* Backdrop */
 #mgr-backdrop {
-  position: fixed; inset: 0;
-  z-index: 940;
-  background: rgba(13,27,42,.45);
-  backdrop-filter: blur(4px);
-  opacity: 0; pointer-events: none;
-  transition: opacity .35s ease;
+  position: fixed; inset: 0; z-index: 940;
+  background: rgba(13,27,42,.45); backdrop-filter: blur(4px);
+  opacity: 0; pointer-events: none; transition: opacity .35s;
 }
 body.mgr-open #mgr-backdrop { opacity: 1; pointer-events: auto; }
-
-/* Panel inner */
-.mgr-head {
-  position: sticky; top: 0; z-index: 2;
-  background: var(--navy);
-  padding: 20px 24px;
-  display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 2px solid var(--red);
-}
-.mgr-head-title {
-  font-family: var(--serif);
-  font-size: 16px;
-  color: #fff;
-  letter-spacing: -.01em;
-}
+.mgr-head { position: sticky; top: 0; z-index: 2; background: var(--navy); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--red); }
+.mgr-head-title { font-family: var(--serif); font-size: 16px; color: #fff; }
 .mgr-head-title em { color: var(--red); font-style: normal; }
-.mgr-close {
-  width: 32px; height: 32px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 50%;
-  background: rgba(255,255,255,.08);
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background .2s;
-}
-.mgr-close:hover { background: rgba(255,255,255,.15); }
-
+.mgr-close { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255,255,255,.08); color: #fff; font-size: 18px; cursor: pointer; transition: background .2s; }
+.mgr-close:hover { background: rgba(255,255,255,.18); }
 .mgr-body { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
-
-/* KPI row */
-.mgr-kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.mgr-kpi {
-  background: var(--navy);
-  border-radius: 8px;
-  padding: 16px;
-  text-align: center;
-}
-.mgr-kpi-val {
-  font-family: var(--serif);
-  font-size: 28px;
-  color: #fff;
-  line-height: 1;
-}
+.mgr-kpi-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.mgr-kpi { background: var(--navy); border-radius: 8px; padding: 16px; text-align: center; }
+.mgr-kpi-val { font-family: var(--serif); font-size: 28px; color: #fff; line-height: 1; }
 .mgr-kpi-val span { font-family: var(--sans); font-size: 14px; font-weight: 700; color: var(--red); }
-.mgr-kpi-lbl {
-  font-size: 9px; font-weight: 700;
-  letter-spacing: .12em; text-transform: uppercase;
-  color: rgba(255,255,255,.4);
-  margin-top: 6px;
-}
-
-/* Section card */
-.mgr-card {
-  background: #fff;
-  border: 1px solid rgba(0,0,0,.07);
-  border-radius: 8px;
-  padding: 18px 20px;
-  display: flex; flex-direction: column; gap: 8px;
-}
-.mgr-card-num {
-  font-size: 9px; font-weight: 700;
-  letter-spacing: .14em; text-transform: uppercase;
-  color: var(--red);
-}
-.mgr-card h4 {
-  font-family: var(--serif);
-  font-size: 15px; font-weight: 400;
-  color: var(--navy);
-  line-height: 1.25;
-}
-.mgr-card p {
-  font-size: 12px; color: var(--text-muted);
-  line-height: 1.55;
-}
-.mgr-card .mgr-link {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: 10px; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase;
-  color: var(--red);
-  margin-top: 4px;
-  cursor: pointer;
-  transition: color .2s;
-}
-.mgr-card .mgr-link:hover { color: var(--red-lt); }
-
-/* Dark card */
-.mgr-card.dark {
-  background: var(--navy);
-  border-color: transparent;
-}
+.mgr-kpi-lbl { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.4); margin-top: 6px; }
+.mgr-card { background: #fff; border: 1px solid rgba(0,0,0,.07); border-radius: 8px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; }
+.mgr-card-num { font-size: 9px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--red); }
+.mgr-card h4 { font-family: var(--serif); font-size: 15px; font-weight: 400; color: var(--navy); line-height: 1.25; }
+.mgr-card p { font-size: 12px; color: var(--text-muted); line-height: 1.55; }
+.mgr-card .mgr-link { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--red); margin-top: 4px; cursor: pointer; }
+.mgr-card.dark { background: var(--navy); border-color: transparent; }
 .mgr-card.dark h4 { color: #fff; }
 .mgr-card.dark p { color: rgba(255,255,255,.55); }
-
-/* Beat pills */
-.mgr-beats { display: flex; flex-wrap: wrap; gap: 6px; }
-.mgr-beat-pill {
-  font-size: 10px; font-weight: 600;
-  letter-spacing: .06em;
-  padding: 5px 12px;
-  border-radius: 100px;
-  background: var(--warm);
-  color: var(--navy);
-  border: 1px solid rgba(0,0,0,.06);
-}
+.mgr-beats { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.mgr-beat-pill { font-size: 10px; font-weight: 600; padding: 5px 12px; border-radius: 100px; background: var(--warm); color: var(--navy); border: 1px solid rgba(0,0,0,.06); }
 .mgr-beat-pill:first-child { background: var(--navy); color: #fff; }
-
-/* Timeline */
-.mgr-timeline { display: flex; flex-direction: column; gap: 0; position: relative; padding-left: 20px; }
-.mgr-timeline::before {
-  content: '';
-  position: absolute; left: 6px; top: 4px; bottom: 4px;
-  width: 2px;
-  background: linear-gradient(180deg, var(--red), var(--navy));
-}
+.mgr-timeline { display: flex; flex-direction: column; position: relative; padding-left: 20px; }
+.mgr-timeline::before { content: ''; position: absolute; left: 6px; top: 4px; bottom: 4px; width: 2px; background: linear-gradient(180deg,var(--red),var(--navy)); }
 .mgr-tl-item { display: flex; align-items: flex-start; gap: 14px; padding: 8px 0; position: relative; }
-.mgr-tl-dot {
-  position: absolute; left: -20px; top: 12px;
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--red);
-  border: 2px solid var(--cream);
-  box-shadow: 0 0 0 2px var(--red);
-  flex-shrink: 0;
-}
+.mgr-tl-dot { position: absolute; left: -20px; top: 12px; width: 10px; height: 10px; border-radius: 50%; background: var(--red); border: 2px solid var(--cream); box-shadow: 0 0 0 2px var(--red); }
 .mgr-tl-item.milestone .mgr-tl-dot { background: var(--navy); box-shadow: 0 0 0 2px var(--navy); }
-.mgr-tl-date {
-  font-size: 10px; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase;
-  color: var(--navy);
-  min-width: 60px;
-  flex-shrink: 0;
-}
+.mgr-tl-date { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--navy); min-width: 60px; }
 .mgr-tl-text { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-
-/* Reco banner */
-.mgr-reco {
-  background: var(--navy);
-  border-radius: 8px;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-}
-.mgr-reco::before {
-  content: '';
-  position: absolute; top: 0; left: 0;
-  width: 100%; height: 3px;
-  background: var(--red);
-}
-.mgr-reco-label {
-  font-size: 9px; font-weight: 700;
-  letter-spacing: .16em; text-transform: uppercase;
-  color: var(--red);
-  margin-bottom: 8px;
-}
-.mgr-reco h4 {
-  font-family: var(--serif);
-  font-size: 18px; font-style: italic;
-  color: #fff;
-  line-height: 1.3;
-  margin-bottom: 10px;
-}
-.mgr-reco p {
-  font-size: 12px;
-  color: rgba(255,255,255,.5);
-  line-height: 1.6;
-}
+.mgr-reco { background: var(--navy); border-radius: 8px; padding: 20px; position: relative; overflow: hidden; }
+.mgr-reco::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--red); }
+.mgr-reco-label { font-size: 9px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--red); margin-bottom: 8px; }
+.mgr-reco h4 { font-family: var(--serif); font-size: 18px; font-style: italic; color: #fff; line-height: 1.3; margin-bottom: 10px; }
+.mgr-reco p { font-size: 12px; color: rgba(255,255,255,.5); line-height: 1.6; }
 .mgr-reco-items { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-.mgr-reco-tag {
-  font-size: 9px; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase;
-  padding: 4px 10px; border-radius: 100px;
-  background: rgba(255,255,255,.08);
-  color: rgba(255,255,255,.6);
+.mgr-reco-tag { font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; background: rgba(255,255,255,.08); color: rgba(255,255,255,.6); }
+.mgr-foot { padding: 16px 24px; text-align: center; border-top: 1px solid rgba(0,0,0,.06); }
+.mgr-foot-txt { font-size: 10px; color: var(--text-faint); letter-spacing: .06em; }
+
+/* ── BUDGET EXPLORER ────────────────────────────────────────── */
+#bgt-overlay {
+  position: fixed; inset: 0; z-index: 960; background: var(--cream);
+  display: flex; flex-direction: column;
+  transform: translateY(100%); transition: transform .45s cubic-bezier(.25,.46,.45,.94);
 }
+body.bgt-open #bgt-overlay { transform: translateY(0); }
+
+#bgt-bar {
+  background: var(--navy); height: 54px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; border-bottom: 2px solid var(--red);
+  gap: 12px;
+}
+.bgt-bar-title { font-family: var(--serif); font-size: 16px; color: #fff; white-space: nowrap; flex-shrink: 0; }
+.bgt-bar-title em { color: var(--red); font-style: normal; }
+.bgt-bar-right { display: flex; align-items: center; gap: 8px; }
+.bgt-sc-label { font-size: 10px; color: rgba(255,255,255,.3); letter-spacing: .06em; white-space: nowrap; }
+.bgt-presets { display: flex; gap: 3px; }
+.bgt-p-btn {
+  font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  padding: 6px 12px; border-radius: 4px; border: 1.5px solid rgba(255,255,255,.14);
+  background: transparent; color: rgba(255,255,255,.4); cursor: pointer; transition: all .18s; white-space: nowrap;
+}
+.bgt-p-btn:hover { border-color: rgba(255,255,255,.4); color: rgba(255,255,255,.8); }
+.bgt-p-btn.on { background: var(--red); border-color: var(--red); color: #fff; }
+.bgt-bar-sep { width: 1px; height: 22px; background: rgba(255,255,255,.1); flex-shrink: 0; }
+.bgt-x { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255,255,255,.08); color: #fff; font-size: 18px; cursor: pointer; transition: background .2s; flex-shrink: 0; }
+.bgt-x:hover { background: rgba(255,255,255,.18); }
+
+#bgt-wrap { flex: 1; overflow-y: auto; overflow-x: auto; padding-bottom: 76px; }
+#bgt-wrap::-webkit-scrollbar { width: 5px; }
+#bgt-wrap::-webkit-scrollbar-thumb { background: rgba(0,0,0,.1); border-radius: 3px; }
+
+#bgt-tbl { width: 100%; min-width: 700px; border-collapse: collapse; }
+
+#bgt-tbl thead { position: sticky; top: 0; z-index: 10; }
+#bgt-tbl thead th {
+  background: var(--navy); padding: 11px 14px;
+  font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(255,255,255,.4); text-align: left; border-bottom: 2px solid rgba(192,57,43,.4);
+  white-space: nowrap;
+}
+#bgt-tbl thead th.tc { text-align: center; }
+#bgt-tbl thead th.tr { text-align: right; padding-right: 20px; color: var(--red); }
+
+/* Area group header */
+.rg td { padding: 12px 14px 5px; font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--red); background: var(--warm); border-top: 2px solid rgba(0,0,0,.07); }
+
+/* Item row */
+.ri { border-bottom: 1px solid rgba(0,0,0,.045); transition: background .1s; }
+.ri:hover { background: rgba(13,27,42,.025); }
+.ri.off { opacity: .35; }
+.ri td { padding: 10px 14px; vertical-align: middle; }
+.an { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.25; }
+.as { font-size: 10px; color: var(--text-muted); line-height: 1.4; margin-top: 2px; }
+.af { display: inline-block; margin-top: 4px; font-size: 9px; font-weight: 600; letter-spacing: .07em; padding: 2px 8px; border-radius: 100px; background: var(--warm); color: var(--text-muted); border: 1px solid rgba(0,0,0,.06); }
+
+/* Tier cell */
+.tt { text-align: center; cursor: pointer; padding: 7px 8px !important; }
+.tb { display: flex; flex-direction: column; align-items: center; padding: 7px 12px; border-radius: 6px; border: 1.5px solid rgba(0,0,0,.08); min-width: 70px; margin: 0 auto; transition: all .14s; }
+.tt:hover .tb { border-color: var(--navy); background: rgba(13,27,42,.05); }
+.tb.sel { background: var(--navy) !important; border-color: var(--navy) !important; }
+.tb.dim { opacity: .4; }
+.tl { font-size: 8px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: transparent; margin-bottom: 1px; }
+.tb.sel .tl { color: var(--red); }
+.tp { font-family: var(--serif); font-size: 14px; color: var(--text); line-height: 1; }
+.tb.sel .tp { color: #fff; }
+.to { font-size: 9px; color: var(--text-faint); margin-top: 2px; }
+.tb.sel .to { color: rgba(255,255,255,.45); }
+
+/* Selected cost cell */
+.tsc { text-align: right; padding-right: 18px !important; font-family: var(--serif); font-size: 15px; color: var(--red); white-space: nowrap; vertical-align: middle; }
+.tsc.none { color: var(--text-faint); font-family: var(--sans); font-size: 12px; }
+
+/* Toggle-off cell */
+.tx { text-align: center; cursor: pointer; padding: 7px 8px !important; }
+.txb { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid rgba(0,0,0,.1); margin: 0 auto; font-size: 11px; color: var(--text-faint); transition: all .14s; }
+.tx:hover .txb { border-color: var(--red); color: var(--red); background: rgba(192,57,43,.06); }
+.ri.off .txb { background: rgba(0,0,0,.06); color: var(--text-muted); border-color: rgba(0,0,0,.1); }
+
+/* Subtotal row */
+.rs td { padding: 9px 14px; background: #edeae3; border-top: 1px solid rgba(0,0,0,.07); font-size: 11px; font-weight: 600; color: var(--text-muted); }
+.rs .rsr { text-align: right; padding-right: 20px !important; font-family: var(--serif); font-size: 16px; color: var(--red); }
 
 /* Footer */
-.mgr-foot {
-  padding: 16px 24px;
-  text-align: center;
-  border-top: 1px solid rgba(0,0,0,.06);
+#bgt-foot {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 970;
+  background: var(--navy); display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 24px; border-top: 2px solid var(--red);
+  box-shadow: 0 -4px 24px rgba(0,0,0,.3);
+  transform: translateY(100%); transition: transform .3s ease;
 }
-.mgr-foot-logo { height: 14px; width: auto; margin: 0 auto 6px; color: var(--text-muted); }
-.mgr-foot-txt { font-size: 10px; color: var(--text-faint); letter-spacing: .06em; }
+body.bgt-open #bgt-foot { transform: translateY(0); }
+.bft-l { display: flex; align-items: baseline; gap: 16px; }
+.bft-lbl { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.4); }
+#bft-val { font-family: var(--serif); font-size: 30px; color: #fff; line-height: 1; min-width: 120px; }
+#bft-ore { font-size: 11px; color: rgba(255,255,255,.3); }
+.bft-r { display: flex; gap: 8px; }
+.bft-copy { font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 10px 18px; border-radius: 5px; background: var(--red); color: #fff; cursor: pointer; transition: background .2s; border: none; }
+.bft-copy:hover { background: var(--red-lt); }
+.bft-copy.ok { background: #27ae60; }
+.bft-rst { font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 10px 14px; border-radius: 5px; background: transparent; color: rgba(255,255,255,.4); border: 1.5px solid rgba(255,255,255,.12); cursor: pointer; transition: all .2s; }
+.bft-rst:hover { border-color: rgba(255,255,255,.4); color: rgba(255,255,255,.7); }
 
 </style>
 </head>
 <body>
 
-<!-- ═══ RIBRAIN HEADER ═══ -->
+
+<!-- RIBRAIN HEADER -->
 <header id="rb-header">
   <div class="rb-logo">
-    <svg class="rb-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 146.741 33.299"><g transform="translate(0 0)"><g transform="translate(0 0)"><path d="M11.363,32.139a13.045,13.045,0,0,1,.321-2.977,6.478,6.478,0,0,1,1.077-2.4,5.25,5.25,0,0,1,1.992-1.627,6.949,6.949,0,0,1,3.023-.594,11.733,11.733,0,0,1,1.236.068c.427.046.795.1,1.1.16V18.72a5.062,5.062,0,0,0-1.42-.229,7.743,7.743,0,0,0-2.383.366,8.792,8.792,0,0,0-2.152,1.03,8.065,8.065,0,0,0-1.786,1.6,7.976,7.976,0,0,0-1.237,2.038h-.092v-4.4H4.859V35.089h6.5Z" transform="translate(-2.656 -10.109)" fill="currentColor"/><rect width="6.503" height="15.957" transform="translate(20.989 9.023)" fill="currentColor"/><path d="M170.115,34.567a2.927,2.927,0,0,1,.849-.985,4.288,4.288,0,0,1,1.238-.619,11.768,11.768,0,0,1,1.442-.367c.519-.091,1.036-.165,1.556-.228s1.015-.138,1.489-.229a10.518,10.518,0,0,0,1.328-.342,2.917,2.917,0,0,0,1.031-.573V33.65a12.677,12.677,0,0,1-.11,1.438h6.614V25.222a5.7,5.7,0,0,0-.962-3.458,6.594,6.594,0,0,0-2.473-2.039,11.143,11.143,0,0,0-3.345-.984,26.568,26.568,0,0,0-3.617-.252,19.791,19.791,0,0,0-3.914.389,11.185,11.185,0,0,0-3.507,1.3,7.8,7.8,0,0,0-2.564,2.427,7.557,7.557,0,0,0-1.145,3.8h6.5a3.68,3.68,0,0,1,1.285-2.75" transform="translate(-89.312 -10.108)" fill="currentColor"/><rect width="6.503" height="15.957" transform="translate(100.316 9.023)" fill="currentColor"/><path d="M250.93,30.4q0-3.619,1.191-5.2a4.509,4.509,0,0,1,3.849-1.582,3.551,3.551,0,0,1,3.252,1.442,8.311,8.311,0,0,1,.916,4.375v5.651h6.5V28.246a19.069,19.069,0,0,0-.389-4.007,7.631,7.631,0,0,0-1.351-3.069,6.373,6.373,0,0,0-2.632-1.969,11.076,11.076,0,0,0-4.284-.709,9.269,9.269,0,0,0-4.031.939,7.457,7.457,0,0,0-3.206,3h-.136v-3.3h-6.184V35.088h6.5Z" transform="translate(-133.622 -10.108)" fill="currentColor"/><rect width="6.504" height="7.723" transform="translate(0 24.98)" fill="currentColor"/><rect width="6.504" height="7.724" transform="translate(124.313 24.98)" fill="currentColor"/><rect width="6.502" height="7.723" transform="translate(108.604 24.98)" fill="currentColor"/><path d="M310.523,55.1a3.861,3.861,0,1,0,3.861,3.862,3.862,3.862,0,0,0-3.861-3.862" transform="translate(-167.643 -30.124)" fill="#45ffd7"/></g></g></svg>
+    <img class="rb-logo-img" src="https://ribrainstudio.com/image/logo-rib-bianco.png" alt="Ribrain Studio">
     <div class="rb-sep"></div>
     <span class="rb-tag">Studio</span>
   </div>
   <div class="rb-right"><strong>BOBST Label</strong> · Proposta Strategica · 2026</div>
 </header>
 
+<!-- BUTTONS -->
+<button id="mgr-toggle"><span class="mgr-diamond">◆</span> Manager View</button>
+<button id="budget-toggle"><span class="bgt-euro">€</span> Preventivo</button>
 
-<!-- ═══ BUDGET EXPLORER ═══ -->
-<button id="budget-toggle" aria-label="Apri Budget Explorer">
-  <span class="bgt-icon">€</span> Budget
-</button>
-
-<div id="bgt-overlay" role="dialog" aria-label="Budget Explorer">
-  <!-- Top bar -->
-  <div id="bgt-bar">
-    <div class="bgt-bar-title">
-      € <em>Budget</em> Explorer
-      <span class="bgt-bar-subtitle">Componi il tuo preventivo</span>
-    </div>
-    <button class="bgt-close" aria-label="Chiudi">&times;</button>
-  </div>
-
-  <!-- Area Tabs -->
-  <div id="bgt-tabs">
-    <div class="bgt-tab active" data-area="all">
-      Tutto <span class="bgt-tab-total">51</span>
-    </div>
-    <div class="bgt-tab" data-area="Strategia">
-      Strategia <span class="bgt-tab-total">12</span>
-    </div>
-    <div class="bgt-tab" data-area="Video">
-      Video <span class="bgt-tab-total">12</span>
-    </div>
-    <div class="bgt-tab" data-area="Asset di lancio">
-      Asset Lancio <span class="bgt-tab-total">3</span>
-    </div>
-    <div class="bgt-tab" data-area="Contenuti">
-      Contenuti <span class="bgt-tab-total">10</span>
-    </div>
-    <div class="bgt-tab" data-area="Video Demo">
-      Video Demo <span class="bgt-tab-total">12</span>
-    </div>
-    <div class="bgt-tab" data-area="Chiusura">
-      Chiusura <span class="bgt-tab-total">1</span>
-    </div>
-    <div class="bgt-tab" data-area="Project Management">
-      PM <span class="bgt-tab-total">1</span>
-    </div>
-  </div>
-
-  <!-- Main -->
-  <div id="bgt-main">
-    <!-- Items list -->
-    <div id="bgt-list"></div>
-
-    <!-- Sidebar -->
-    <div id="bgt-sidebar">
-      <div class="bgt-sidebar-head">
-        <h3>La tua selezione</h3>
-        <p>Seleziona le voci e scegli il tier</p>
-      </div>
-
-      <!-- Preset row inside sidebar head area -->
-      <div style="padding: 12px 20px 0; border-bottom: 1px solid rgba(0,0,0,.07);">
-        <div style="font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px;">Preset rapido</div>
-        <div class="bgt-preset-row">
-          <button class="bgt-preset-btn pactive" data-preset="T1">T1</button>
-          <button class="bgt-preset-btn" data-preset="T2">T2</button>
-          <button class="bgt-preset-btn" data-preset="T3">T3</button>
-          <button class="bgt-preset-btn" data-preset="OFF">Svuota</button>
-        </div>
-      </div>
-
-      <div id="bgt-sel-list">
-        <div class="bgt-empty-msg">Nessuna voce selezionata.<br>Usa i pulsanti T1/T2/T3 su ogni attività.</div>
-      </div>
-
-      <div id="bgt-sidebar-foot">
-        <div class="bgt-total-row">
-          <div>
-            <div class="bgt-total-lbl">Totale selezionato</div>
-            <div class="bgt-ore-total" id="bgt-ore-total">0 ore</div>
-          </div>
-          <div class="bgt-total-val" id="bgt-total">€ 0</div>
-        </div>
-        <div class="bgt-actions">
-          <button class="bgt-btn-copy" id="bgt-copy-btn">📋 Copia riepilogo</button>
-          <button class="bgt-btn-reset" id="bgt-reset-btn">Reset</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ═══ MANAGER PANEL — SLIDE-IN ═══ -->
-<button id="mgr-toggle" aria-label="Apri Manager View">
-  <span class="mgr-diamond">◆</span> Manager View
-</button>
-
-<div id="mgr-backdrop" aria-hidden="true"></div>
-
-<div id="mgr-panel" role="dialog" aria-label="Manager View">
-  <div class="mgr-head">
-    <div class="mgr-head-title">◆ <em>Manager</em> View</div>
-    <button class="mgr-close" aria-label="Chiudi">&times;</button>
-  </div>
-
+<!-- MANAGER PANEL -->
+<div id="mgr-backdrop"></div>
+<div id="mgr-panel" role="dialog">
+  <div class="mgr-head"><div class="mgr-head-title">◆ <em>Manager</em> View</div><button class="mgr-close">&times;</button></div>
   <div class="mgr-body">
-
-    <!-- KPI -->
     <div class="mgr-kpi-row">
-      <div class="mgr-kpi">
-        <div class="mgr-kpi-val">5<span>beat</span></div>
-        <div class="mgr-kpi-lbl">Pilastri Messaggio</div>
-      </div>
-      <div class="mgr-kpi">
-        <div class="mgr-kpi-val">2<span>rotte</span></div>
-        <div class="mgr-kpi-lbl">Percorsi Strategici</div>
-      </div>
-      <div class="mgr-kpi">
-        <div class="mgr-kpi-val">1<span>rec</span></div>
-        <div class="mgr-kpi-lbl">Raccomandazione</div>
-      </div>
+      <div class="mgr-kpi"><div class="mgr-kpi-val">5<span>beat</span></div><div class="mgr-kpi-lbl">Pilastri</div></div>
+      <div class="mgr-kpi"><div class="mgr-kpi-val">2<span>vie</span></div><div class="mgr-kpi-lbl">Percorsi</div></div>
+      <div class="mgr-kpi"><div class="mgr-kpi-val">1<span>rec</span></div><div class="mgr-kpi-lbl">Raccomandazione</div></div>
     </div>
-
-    <!-- Territorio -->
     <div class="mgr-card dark">
       <div class="mgr-card-num">Territorio</div>
-      <h4 style="font-size:20px; font-style:italic;">MASTERED</h4>
-      <p>Non uno slogan — una piattaforma strategica. La lente attraverso cui si sviluppa ogni elemento comunicativo del lancio Mark II. Dal primo ciclo. Ad ogni turno.</p>
+      <h4 style="font-size:20px;font-style:italic;">MASTERED</h4>
+      <p>Non uno slogan — una piattaforma strategica. La lente attraverso cui si sviluppa ogni elemento del lancio Mark II.</p>
       <a class="mgr-link" data-goto="territorio">Vai alla sezione →</a>
     </div>
-
-    <!-- Naming -->
     <div class="mgr-card">
-      <div class="mgr-card-num">Naming</div>
-      <h4>MASTER M5 Mark II</h4>
-      <p>Continuità di famiglia (MASTER) + salto generazionale (MARK II). Denominazione ingegneristica che i decisori industriali comprendono istintivamente.</p>
+      <div class="mgr-card-num">Naming</div><h4>MASTER M5 Mark II</h4>
+      <p>Continuità di famiglia + salto generazionale. Denominazione che i decisori industriali comprendono istintivamente.</p>
       <a class="mgr-link" data-goto="nome">Vai alla sezione →</a>
     </div>
-
-    <!-- 5 Beats -->
     <div class="mgr-card">
-      <div class="mgr-card-num">Sistema Narrativo</div>
-      <h4>Five-Beat System</h4>
+      <div class="mgr-card-num">Sistema Narrativo</div><h4>Five-Beat System</h4>
       <div class="mgr-beats">
-        <span class="mgr-beat-pill">01 Arrivo</span>
-        <span class="mgr-beat-pill">02 Precisione</span>
-        <span class="mgr-beat-pill">03 Ergonomia</span>
-        <span class="mgr-beat-pill">04 Automazione</span>
+        <span class="mgr-beat-pill">01 Arrivo</span><span class="mgr-beat-pill">02 Precisione</span>
+        <span class="mgr-beat-pill">03 Ergonomia</span><span class="mgr-beat-pill">04 Automazione</span>
         <span class="mgr-beat-pill">05 Il Risultato</span>
       </div>
-      <p style="margin-top:6px">Cinque blocchi narrativi che strutturano tutta la comunicazione — dal film alla sales deck, ogni touchpoint segue lo stesso arco.</p>
       <a class="mgr-link" data-goto="beats">Vai alla sezione →</a>
     </div>
-
-    <!-- Headlines -->
     <div class="mgr-card">
-      <div class="mgr-card-num">Headlines Top</div>
+      <div class="mgr-card-num">Headline top</div>
       <h4 style="font-style:italic;">"MASTER M5 Mark II. Mastered."</h4>
-      <p><strong>Alt:</strong> "MASTERED. Dal primo ciclo." · "Portato oltre. In ogni modo che conta."</p>
+      <p>Alt: "MASTERED. Dal primo ciclo." · "Portato oltre. In ogni modo che conta."</p>
       <a class="mgr-link" data-goto="headlines">Vai alla sezione →</a>
     </div>
-
-    <!-- Film -->
     <div class="mgr-card">
-      <div class="mgr-card-num">Film</div>
-      <h4>"The Shift"</h4>
-      <p>Film istituzionale strutturato sui 5 beat. Approccio documentaristico-industriale con estetica da cinema di precisione. Voce fuori campo di un operatore reale.</p>
+      <div class="mgr-card-num">Film</div><h4>"The Shift"</h4>
+      <p>Film istituzionale sui 5 beat. Approccio documentaristico-industriale. Voce di un operatore reale.</p>
       <a class="mgr-link" data-goto="film">Vai alla sezione →</a>
     </div>
-
-    <!-- Timeline -->
     <div class="mgr-card">
-      <div class="mgr-card-num">Roadmap</div>
-      <h4>Timeline di Lancio</h4>
+      <div class="mgr-card-num">Roadmap</div><h4>Timeline Lancio</h4>
       <div class="mgr-timeline">
-        <div class="mgr-tl-item">
-          <div class="mgr-tl-dot"></div>
-          <div class="mgr-tl-date">Apr '26</div>
-          <div class="mgr-tl-text">Kick-off & Creative Development</div>
-        </div>
-        <div class="mgr-tl-item">
-          <div class="mgr-tl-dot"></div>
-          <div class="mgr-tl-date">Mag–Giu</div>
-          <div class="mgr-tl-text">Produzione Film + Asset Design</div>
-        </div>
-        <div class="mgr-tl-item milestone">
-          <div class="mgr-tl-dot"></div>
-          <div class="mgr-tl-date">Lug '26</div>
-          <div class="mgr-tl-text">Open House Firenze</div>
-        </div>
-        <div class="mgr-tl-item">
-          <div class="mgr-tl-dot"></div>
-          <div class="mgr-tl-date">Ago '26</div>
-          <div class="mgr-tl-text">Digital Go-Live & Social Campaign</div>
-        </div>
-        <div class="mgr-tl-item milestone">
-          <div class="mgr-tl-dot"></div>
-          <div class="mgr-tl-date">Set '26</div>
-          <div class="mgr-tl-text">Labelexpo Americas — Lancio Pubblico</div>
-        </div>
+        <div class="mgr-tl-item"><div class="mgr-tl-dot"></div><div class="mgr-tl-date">Apr '26</div><div class="mgr-tl-text">Kick-off & Creative Dev</div></div>
+        <div class="mgr-tl-item"><div class="mgr-tl-dot"></div><div class="mgr-tl-date">Mag–Giu</div><div class="mgr-tl-text">Produzione Film + Asset</div></div>
+        <div class="mgr-tl-item milestone"><div class="mgr-tl-dot"></div><div class="mgr-tl-date">Lug '26</div><div class="mgr-tl-text">Open House Firenze</div></div>
+        <div class="mgr-tl-item milestone"><div class="mgr-tl-dot"></div><div class="mgr-tl-date">Set '26</div><div class="mgr-tl-text">Labelexpo Americas — Lancio</div></div>
       </div>
     </div>
-
-    <!-- Raccomandazione -->
     <div class="mgr-reco">
       <div class="mgr-reco-label">Raccomandazione Finale</div>
       <h4>Percorso A: MASTERED</h4>
-      <p>Non stiamo cercando di far sembrare più nuovo. Stiamo costruendo il caso per cui è migliore — in un linguaggio che un responsabile di produzione, un buyer e un rep vendite possono tutti usare.</p>
+      <p>Non stiamo cercando di far sembrare più nuovo. Stiamo costruendo il caso per cui è migliore — in un linguaggio che responsabile di produzione, buyer e rep vendite possono tutti usare.</p>
       <div class="mgr-reco-items">
         <span class="mgr-reco-tag">Territorio: MASTERED</span>
-        <span class="mgr-reco-tag">Naming: MASTER M5 Mark II</span>
         <span class="mgr-reco-tag">Film: The Shift</span>
         <span class="mgr-reco-tag">Sistema: Five-Beat</span>
       </div>
-      <a class="mgr-link" style="color:rgba(255,255,255,.6); margin-top:12px" data-goto="chiusura">Vai alla chiusura →</a>
+      <a class="mgr-link" style="color:rgba(255,255,255,.6);margin-top:12px" data-goto="chiusura">Vai alla chiusura →</a>
     </div>
-
   </div>
+  <div class="mgr-foot"><div class="mgr-foot-txt">Ribrain Studio · Confidenziale · Marzo 2026</div></div>
+</div>
 
-  <!-- Panel footer -->
-  <div class="mgr-foot">
-    <svg class="mgr-foot-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 146.741 33.299"><g transform="translate(0 0)"><g transform="translate(0 0)"><path d="M11.363,32.139a13.045,13.045,0,0,1,.321-2.977,6.478,6.478,0,0,1,1.077-2.4,5.25,5.25,0,0,1,1.992-1.627,6.949,6.949,0,0,1,3.023-.594,11.733,11.733,0,0,1,1.236.068c.427.046.795.1,1.1.16V18.72a5.062,5.062,0,0,0-1.42-.229,7.743,7.743,0,0,0-2.383.366,8.792,8.792,0,0,0-2.152,1.03,8.065,8.065,0,0,0-1.786,1.6,7.976,7.976,0,0,0-1.237,2.038h-.092v-4.4H4.859V35.089h6.5Z" transform="translate(-2.656 -10.109)" fill="currentColor"/><rect width="6.503" height="15.957" transform="translate(20.989 9.023)" fill="currentColor"/><path d="M250.93,30.4q0-3.619,1.191-5.2a4.509,4.509,0,0,1,3.849-1.582,3.551,3.551,0,0,1,3.252,1.442,8.311,8.311,0,0,1,.916,4.375v5.651h6.5V28.246a19.069,19.069,0,0,0-.389-4.007,7.631,7.631,0,0,0-1.351-3.069,6.373,6.373,0,0,0-2.632-1.969,11.076,11.076,0,0,0-4.284-.709,9.269,9.269,0,0,0-4.031.939,7.457,7.457,0,0,0-3.206,3h-.136v-3.3h-6.184V35.088h6.5Z" transform="translate(-133.622 -10.108)" fill="currentColor"/><rect width="6.504" height="7.723" transform="translate(0 24.98)" fill="currentColor"/><rect width="6.504" height="7.724" transform="translate(124.313 24.98)" fill="currentColor"/><rect width="6.502" height="7.723" transform="translate(108.604 24.98)" fill="currentColor"/><path d="M310.523,55.1a3.861,3.861,0,1,0,3.861,3.862,3.862,3.862,0,0,0-3.861-3.862" transform="translate(-167.643 -30.124)" fill="#45ffd7"/></g></g></svg>
-    <div class="mgr-foot-txt">Ribrain Studio · Confidenziale</div>
+<!-- BUDGET EXPLORER -->
+<div id="bgt-overlay" role="dialog">
+  <div id="bgt-bar">
+    <div class="bgt-bar-title">€ <em>Preventivo</em> Interattivo</div>
+    <div class="bgt-bar-right">
+      <span class="bgt-sc-label">Scenario:</span>
+      <div class="bgt-presets">
+        <button class="bgt-p-btn on" data-p="T1">T1 Base &nbsp;€51K</button>
+        <button class="bgt-p-btn" data-p="T2">T2 Standard &nbsp;€63.75K</button>
+        <button class="bgt-p-btn" data-p="T3">T3 Esteso &nbsp;€76.5K</button>
+        <button class="bgt-p-btn" data-p="OFF">Svuota</button>
+      </div>
+      <div class="bgt-bar-sep"></div>
+      <div class="bgt-x">&times;</div>
+    </div>
+  </div>
+  <div id="bgt-wrap">
+    <table id="bgt-tbl">
+      <thead>
+        <tr>
+          <th style="width:38%">Attività</th>
+          <th class="tc" style="width:13%">T1 · Base</th>
+          <th class="tc" style="width:13%">T2 · Standard</th>
+          <th class="tc" style="width:13%">T3 · Esteso</th>
+          <th class="tr" style="width:15%">Selezionato</th>
+          <th style="width:44px"></th>
+        </tr>
+      </thead>
+      <tbody id="bgt-body"></tbody>
+    </table>
+  </div>
+</div>
+<div id="bgt-foot">
+  <div class="bft-l">
+    <div>
+      <div class="bft-lbl">Totale selezionato</div>
+      <div id="bft-val">€ 0</div>
+    </div>
+    <div id="bft-ore">0 ore · 0 attività</div>
+  </div>
+  <div class="bft-r">
+    <button class="bft-copy" id="bft-copy">📋 Copia riepilogo</button>
+    <button class="bft-rst" id="bft-rst">↺ Reset</button>
   </div>
 </div>
 
@@ -2370,6 +1919,7 @@ body.mgr-open #mgr-backdrop { opacity: 1; pointer-events: auto; }
   <div class="cover-ghost" id="coverGhost" aria-hidden="true">M5</div>
 
   <div class="cover-inner">
+    <img class="cover-rb-logo" src="https://i.ibb.co/Lhx0Rk7n/logo-rib-bianco.png" alt="Ribrain Studio" loading="eager">
     <p class="cover-eyebrow">Proposta Strategico-Creativa &nbsp;·&nbsp; Percorso A &nbsp;·&nbsp; Marzo 2026</p>
 
     <h1 class="cover-title" id="heroTitle" aria-label="MASTERED">
@@ -2862,9 +2412,9 @@ body.mgr-open #mgr-backdrop { opacity: 1; pointer-events: auto; }
         <div class="callout reveal d1">
           <p class="label">La Raccomandazione</p>
           <p>
-            <strong style="font-weight:600;">MASTER M5 Mark II</strong> — soggetto a verifica trademark
-            e naming governance. Se questi controlli passano, questo è il nome.
-            Non c'è motivo di scegliere un'opzione più debole.
+            <strong style="font-weight:600;">MASTER M5 Mark II</strong> — raccomandazione finale,
+            soggetta a clearance trademark nei 5 mercati chiave.
+            Se i controlli passano, questo è il nome.
           </p>
         </div>
         <div style="margin-top:20px; padding:20px 0; border-top:1px solid rgba(13,27,42,.1);">
@@ -2980,16 +2530,9 @@ body.mgr-open #mgr-backdrop { opacity: 1; pointer-events: auto; }
     </div>
 
     <!-- Naming governance note -->
-    <div class="callout reveal" style="margin-top:clamp(32px,4vw,48px);">
-      <p class="label">Note operative sul naming</p>
-      <p>
-        Prima che "Mark II" venga presentato al cliente come raccomandazione di naming,
-        deve essere verificato per conflitti trademark in DE, FR, IT, ES, US nella classe IP rilevante.
-        Questo non è un compito dell'agenzia — è del team legale del cliente. Ma l'agenzia deve
-        attivarlo. Parallelamente: verificare se il processo di naming del cliente consente
-        subtitle descriptor, e come i distributori del cliente si riferiscono attualmente all'M5
-        nei loro sistemi di vendita e CRM.
-      </p>
+    <div class="naming-note" style="background:var(--warm);border-left:3px solid var(--red);padding:20px 24px;border-radius:0 8px 8px 0;margin:24px 0;">
+      <p class="t-eyebrow" style="color:var(--red);margin-bottom:8px">Prossimo passo: clearance legale</p>
+      <p class="t-body" style="margin:0">"MASTER M5 Mark II" va verificato per conflitti trademark in DE, FR, IT, ES, US (classe IP rilevante) prima del lancio. Il processo è da avviare con il team legale del cliente in parallelo all'esecuzione creativa — e va tracciato prima che la raccomandazione diventi definitiva.</p>
     </div>
     <!-- ═══ PERFORMANCE EDITION + FUTURE DIRECTION ═══ -->
     <div style="margin-top: clamp(48px,6vw,72px);" class="reveal">
@@ -4764,10 +4307,9 @@ body.mgr-open #mgr-backdrop { opacity: 1; pointer-events: auto; }
               <span class="val-status blocker">Blocco naming</span>
             </div>
             <p class="t-small">
-              "MASTER M5 Mark II" deve essere verificato per conflitti trademark in DE, FR, IT, ES, US
-              nella classe IP rilevante. Non è il lavoro dell'agenzia — è del team legale del cliente.
-              Ma l'agenzia deve attivarlo e tracciarne l'esito prima che la raccomandazione venga
-              presentata al cliente.
+              Verificare "MASTER M5 Mark II" per conflitti trademark in DE, FR, IT, ES, US
+              (classe IP rilevante). Il team legale del cliente avvia il processo;
+              l'agenzia coordina e traccia l'esito prima del lancio.
             </p>
           </div>
           <div class="val-item">
@@ -5360,290 +4902,191 @@ body.mgr-open #mgr-backdrop { opacity: 1; pointer-events: auto; }
     });
   });
 
-  /* ─── RIBRAIN HEADER ──────────────────────────────────────── */
-  const rbH = document.getElementById('rb-header');
-  if (rbH) {
-    let lastY = 0;
-    window.addEventListener('scroll', () => {
-      const y = window.scrollY;
-      if (y > lastY + 6 && y > 80) rbH.classList.add('hidden');
-      else if (y < lastY - 4) rbH.classList.remove('hidden');
-      if (y > 60) rbH.classList.add('scrolled');
-      else rbH.classList.remove('scrolled');
-      /* detect light sections */
-      const coverH = document.getElementById('cover')?.offsetHeight || 0;
-      const hit = document.elementFromPoint(window.innerWidth / 2, 50);
-      const sec = hit?.closest('section');
-      if (sec && (sec.classList.contains('s-light') || sec.classList.contains('s-warm'))) {
-        rbH.classList.add('on-light');
-      } else {
-        rbH.classList.remove('on-light');
-      }
-      lastY = y;
-    }, { passive: true });
-  }
 
-
-  /* ─── BUDGET EXPLORER ──────────────────────────────────────── */
+  /* RIBRAIN HEADER */
   (function() {
-    const BUDGET_DATA = [{"area": "Strategia", "att": "Kick-off & allineamento iniziale", "desc": "Allineamento su obiettivi di business, perimetro progettuale, stakeholder coinvolti, flussi decisionali e modalità operative", "figura": "Account Director / Strategist", "output": "Riunione di kick-off + documento di recap e allineamento condiviso", "t1": {"ore": 10.0, "costo": 500}, "t2": {"ore": 12.5, "costo": 625}, "t3": {"ore": 15.0, "costo": 750}}, {"area": "Strategia", "att": "Raccolta e analisi materiali esistenti", "desc": "Raccolta, revisione e organizzazione di materiali forniti (documentazione tecnica, presentazioni, asset precedenti, linee guida)", "figura": "Strategist / Analyst", "output": "Framework strutturato di lettura e sintesi materiali", "t1": {"ore": 2.0, "costo": 100}, "t2": {"ore": 2.5, "costo": 125}, "t3": {"ore": 3.0, "costo": 150}}, {"area": "Strategia", "att": "Analisi prodotto e contesto di lancio", "desc": "Analisi del prodotto, della gamma e del contesto competitivo/comunicativo in cui si inserisce il lancio", "figura": "Strategist", "output": "Documento di inquadramento strategico", "t1": {"ore": 2.0, "costo": 100}, "t2": {"ore": 2.5, "costo": 125}, "t3": {"ore": 3.0, "costo": 150}}, {"area": "Strategia", "att": "Strategic audit & portfolio fit", "desc": "Valutazione coerenza naming, architettura prodotto e posizionamento rispetto al portfolio esistente", "figura": "Strategist", "output": "Output di sintesi strategica e raccomandazioni", "t1": {"ore": 2.0, "costo": 100}, "t2": {"ore": 2.5, "costo": 125}, "t3": {"ore": 3.0, "costo": 150}}, {"area": "Strategia", "att": "Naming exploration", "desc": "Sviluppo di direttrici naming, territori semantici e possibili logiche di estensione (suffix, naming system)", "figura": "Strategist / Copywriter", "output": "Set di direzioni naming strutturate", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Strategia", "att": "Naming refinement & recommendation", "desc": "Selezione, validazione e rifinitura della proposta naming finale", "figura": "Copywriter / Strategist", "output": "Raccomandazione naming finale con motivazioni strategiche", "t1": {"ore": 4.0, "costo": 200}, "t2": {"ore": 5.0, "costo": 250}, "t3": {"ore": 6.0, "costo": 300}}, {"area": "Strategia", "att": "Messaging framework", "desc": "Costruzione della value proposition, messaggi chiave e pilastri di comunicazione", "figura": "Copywriter / Strategist", "output": "Messaging hierarchy completa", "t1": {"ore": 20.0, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Strategia", "att": "Definizione narrativa di lancio", "desc": "Traduzione dei messaggi in narrativa coerente per il lancio del prodotto", "figura": "Copywriter / Strategist", "output": "Narrativa strutturata per utilizzo cross-canale", "t1": {"ore": 20.0, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Strategia", "att": "Launch concept architecture", "desc": "Ideazione del concept creativo ombrello della campagna di lancio", "figura": "Creative Director / Strategist", "output": "Piattaforma concettuale di campagna", "t1": {"ore": 14.0, "costo": 700}, "t2": {"ore": 17.5, "costo": 875}, "t3": {"ore": 21.0, "costo": 1050}}, {"area": "Strategia", "att": "Sviluppo linee creative", "desc": "Declinazione delle prime direzioni creative coerenti con il concept", "figura": "Creative Director / Art Director", "output": "Prime ipotesi creative validate", "t1": {"ore": 14.0, "costo": 700}, "t2": {"ore": 17.5, "costo": 875}, "t3": {"ore": 21.0, "costo": 1050}}, {"area": "Strategia", "att": "Visual territory & moodboard", "desc": "Definizione del territorio visivo, stile, tone of voice visivo e riferimenti creativi", "figura": "Art Director", "output": "Moodboard e visual direction", "t1": {"ore": 6.0, "costo": 300}, "t2": {"ore": 7.5, "costo": 375}, "t3": {"ore": 9.0, "costo": 450}}, {"area": "Strategia", "att": "Revisione e affinamento strategico", "desc": "Gestione feedback e refinement su naming, concept, messaging e visual direction", "figura": "Account / Strategist", "output": "Round di revisione strategica concordati", "t1": {"ore": 6.0, "costo": 300}, "t2": {"ore": 7.5, "costo": 375}, "t3": {"ore": 9.0, "costo": 450}}, {"area": "Video", "att": "Scrittura script video", "desc": "Sviluppo script narrativo coerente con concept e messaging", "figura": "Copywriter / Creative Director", "output": "Script video approvabile", "t1": {"ore": 20.0, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Video", "att": "Storyboard e visualizzazione scene", "desc": "Traduzione dello script in storyboard con indicazioni visive e di regia", "figura": "Copywriter / Creative Director", "output": "Storyboard completo", "t1": {"ore": 20.0, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Video", "att": "Pianificazione produzione (pre-production)", "desc": "Organizzazione operativa shooting: scaletta, timing, setup, coordinamento risorse", "figura": "Producer / PM", "output": "Piano di produzione dettagliato", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Video", "att": "Definizione art direction", "desc": "Preparazione linee guida visive per lo shooting (inquadrature, luci, stile)", "figura": "Art Director / Creative Director", "output": "Linee guida creative per il set", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video", "att": "Shooting video spot", "desc": "Produzione del video hero con team dedicato", "figura": "Video Team / Director", "output": "Giornata/e di shooting", "t1": {"ore": 60.0, "costo": 3000}, "t2": {"ore": 75.0, "costo": 3750}, "t3": {"ore": 90.0, "costo": 4500}}, {"area": "Video", "att": "Supervisione creativa sul set", "desc": "Controllo coerenza tra output e concept durante la produzione", "figura": "Creative Director / Art Director", "output": "Supervisione live produzione", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video", "att": "Montaggio video master", "desc": "Editing completo del video principale (hero)", "figura": "Editor / Motion Designer", "output": "Versione master video", "t1": {"ore": 60.0, "costo": 3000}, "t2": {"ore": 75.0, "costo": 3750}, "t3": {"ore": 90.0, "costo": 4500}}, {"area": "Video", "att": "Motion graphics & title cards", "desc": "Realizzazione grafiche, titolazioni e insert visivi", "figura": "Motion Designer", "output": "Pacchetto grafico video", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Video", "att": "Color grading & sound design", "desc": "Base color correction e ottimizzazione audio", "figura": "Editor", "output": "Output video finalizzato", "t1": {"ore": 20.0, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Video", "att": "Localizzazione sottotitoli", "desc": "Creazione e adattamento sottotitoli (EFIGS base)", "figura": "Copywriter / Editor", "output": "File sottotitoli + versionamento", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video", "att": "Revisioni e fine tuning", "desc": "Gestione feedback e ottimizzazione finale", "figura": "Editor / PM", "output": "Round di revisione concordati", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video", "att": "Export e finalizzazione", "desc": "Preparazione formati finali e file consegna", "figura": "Editor", "output": "Pacchetto export finale", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Asset di lancio", "att": "Sales asset base", "desc": "Realizzazione materiale sintetico a supporto del team commerciale", "figura": "Designer / Copywriter", "output": "One-pager o asset commerciale light", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Asset di lancio", "att": "Cutdown video", "desc": "Adattamento del video master in versioni brevi per utilizzo digital", "figura": "Editor", "output": "Set di cutdown video", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Asset di lancio", "att": "Adattamenti digital base", "desc": "Adattamento asset per touchpoint digital principali", "figura": "Designer", "output": "Formati base per utilizzo digital", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Creative toolkit esteso", "desc": "Sviluppo sistema completo di asset, layout, regole visive e applicazioni multi-touchpoint", "figura": "Creative Director / Art Director / Designer", "output": "Da definire e quotare a parte per variabilità", "t1": {"ore": 32.0, "costo": 1600}, "t2": {"ore": 40.0, "costo": 2000}, "t3": {"ore": 48.0, "costo": 2400}}, {"area": "Contenuti", "att": "Key visual system esteso", "desc": "Sviluppo di più key visual e relative estensioni", "figura": "Art Director / Designer", "output": "Set key visual aggiuntivi", "t1": {"ore": 24.0, "costo": 1200}, "t2": {"ore": 30.0, "costo": 1500}, "t3": {"ore": 36.0, "costo": 1800}}, {"area": "Contenuti", "att": "Photo shooting dedicato", "desc": "Produzione fotografica prodotto / applicazioni", "figura": "Photographer / Art Director", "output": "Shooting fotografico", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Contenuti", "att": "Photo editing & post-produzione", "desc": "Ritocco, color correction e finalizzazione immagini", "figura": "Retoucher / Designer", "output": "Output fotografico finalizzato", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Open house concept", "desc": "Ideazione concept creativo per evento di lancio", "figura": "Creative Director / Designer", "output": "Concept evento", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Open house asset", "desc": "Realizzazione materiali master a supporto dell’evento", "figura": "Designer / Copywriter", "output": "Asset evento", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Open house support operativo", "desc": "Supporto alla costruzione dei materiali per l’evento", "figura": "Account / Designer / PM", "output": "Non include produzione fisica", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Contenuti", "att": "Extended adaptation pack", "desc": "Adattamenti aggiuntivi per canali, formati e touchpoint", "figura": "Designer / Editor", "output": "Pacchetto adattamenti extra", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Contenuti", "att": "Render / compositing avanzato", "desc": "Produzione visual avanzati o interventi compositing", "figura": "Designer / Motion Designer", "output": "Da valutare per complessità", "t1": {"ore": 32.0, "costo": 1600}, "t2": {"ore": 40.0, "costo": 2000}, "t3": {"ore": 48.0, "costo": 2400}}, {"area": "Contenuti", "att": "Localizzazioni aggiuntive", "desc": "Adattamenti linguistici oltre al perimetro base", "figura": "Copywriter / Editor", "output": "Versioni linguistiche aggiuntive", "t1": {"ore": 24.0, "costo": 1200}, "t2": {"ore": 30.0, "costo": 1500}, "t3": {"ore": 36.0, "costo": 1800}}, {"area": "Video Demo", "att": "Demo video — allineamento contenuti", "desc": "Definizione obiettivi, contenuti da mostrare e struttura demo", "figura": "Account / Strategist", "output": "Allineamento contenuti demo", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — raccolta materiali", "desc": "Raccolta materiali tecnici, input prodotto e flussi operativi da rappresentare", "figura": "Strategist / PM", "output": "Input strutturati per produzione", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — script tecnico", "desc": "Scrittura script orientato a spiegazione funzionale del prodotto", "figura": "Copywriter / Strategist", "output": "Script demo approvabile", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — storyboard operativo", "desc": "Definizione sequenze, inquadrature e flussi dimostrativi", "figura": "Creative Director / Video Team", "output": "Storyboard tecnico", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — pianificazione produzione", "desc": "Organizzazione shooting demo (setup, tempi, materiali)", "figura": "Producer / PM", "output": "Piano operativo demo", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — shooting demo", "desc": "Riprese dedicate alla dimostrazione del prodotto", "figura": "Video Team / Director", "output": "Giornata/e di shooting demo", "t1": {"ore": 80.0, "costo": 4000}, "t2": {"ore": 100.0, "costo": 5000}, "t3": {"ore": 120.0, "costo": 6000}}, {"area": "Video Demo", "att": "Demo video — supervisione tecnica", "desc": "Verifica correttezza contenuti durante riprese", "figura": "Strategist / Cliente", "output": "Supervisione contenuti", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — montaggio tecnico", "desc": "Editing orientato alla chiarezza e comprensione del prodotto", "figura": "Editor", "output": "Versione demo video", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Video Demo", "att": "Demo video — grafiche esplicative", "desc": "Inserimento elementi grafici, callout, highlight funzionali", "figura": "Motion Designer", "output": "Grafiche esplicative", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — sottotitoli e localizzazione", "desc": "Adattamento linguistico e sottotitoli", "figura": "Copywriter / Editor", "output": "File sottotitoli", "t1": {"ore": 12.0, "costo": 600}, "t2": {"ore": 15.0, "costo": 750}, "t3": {"ore": 18.0, "costo": 900}}, {"area": "Video Demo", "att": "Demo video — revisioni", "desc": "Gestione feedback e ottimizzazione finale", "figura": "Editor / PM", "output": "Round revisioni demo", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — export e consegna", "desc": "Finalizzazione file e consegna strutturata", "figura": "Editor", "output": "File finali demo", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Chiusura", "att": "QA & delivery finale", "desc": "Controllo qualità finale, organizzazione file e consegna strutturata", "figura": "Editor / PM", "output": "Pacchetto file ordinato e documentato", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Project Management", "att": "Gestione e coordinamento progetto", "desc": "Gestione flussi, avanzamento, coordinamento team, feedback e delivery", "figura": "Account / PM", "output": "Gestione end-to-end del progetto", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}];
-
-    // State: for each item index, which tier is selected ('off','T1','T2','T3'), default T1
-    const state = BUDGET_DATA.map(() => 'T1');
-
-    const overlay   = document.getElementById('bgt-overlay');
-    const btnOpen   = document.getElementById('budget-toggle');
-    const btnClose  = overlay?.querySelector('.bgt-close');
-    const listEl    = document.getElementById('bgt-list');
-    const selListEl = document.getElementById('bgt-sel-list');
-    const totalEl   = document.getElementById('bgt-total');
-    const oreEl     = document.getElementById('bgt-ore-total');
-    const copyBtn   = document.getElementById('bgt-copy-btn');
-    const resetBtn  = document.getElementById('bgt-reset-btn');
-    const tabs      = document.querySelectorAll('.bgt-tab');
-    const presetBtns = document.querySelectorAll('.bgt-preset-btn');
-
-    let activeArea = 'all';
-
-    if (!overlay) return;
-
-    function openBgt()  { document.body.classList.add('bgt-open'); renderList(); renderSidebar(); }
-    function closeBgt() { document.body.classList.remove('bgt-open'); }
-
-    btnOpen?.addEventListener('click', openBgt);
-    btnClose?.addEventListener('click', closeBgt);
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && document.body.classList.contains('bgt-open')) closeBgt();
-    });
-
-    // Tabs
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        activeArea = tab.dataset.area;
-        renderList();
-      });
-    });
-
-    // Presets
-    presetBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        presetBtns.forEach(b => b.classList.remove('pactive'));
-        btn.classList.add('pactive');
-        const p = btn.dataset.preset;
-        for (let i = 0; i < state.length; i++) {
-          state[i] = p === 'OFF' ? 'off' : p;
-        }
-        renderList(); renderSidebar();
-      });
-    });
-
-    function fmt(n) {
-      return '€\u00a0' + n.toLocaleString('it-IT');
-    }
-
-    function renderList() {
-      if (!listEl) return;
-      const filtered = BUDGET_DATA
-        .map((item, idx) => ({ ...item, idx }))
-        .filter(item => activeArea === 'all' || item.area === activeArea);
-
-      let html = '';
-      let currentArea = '';
-
-      filtered.forEach(item => {
-        const sel = state[item.idx];
-        const isOff = sel === 'off';
-        const tier = isOff ? null : item[sel.toLowerCase()];
-
-        if (activeArea === 'all' && item.area !== currentArea) {
-          currentArea = item.area;
-          html += `<div style="font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red);padding:10px 2px 4px;">${item.area}</div>`;
-        }
-
-        const isSelected = !isOff;
-        html += `
-          <div class="bgt-item ${isSelected ? 'selected' : 'deselected'}" data-idx="${item.idx}">
-            <div class="bgt-item-left">
-              <div class="bgt-item-name">${item.att}</div>
-              <div class="bgt-item-desc">${item.desc}</div>
-              <div class="bgt-item-meta">
-                <span class="bgt-meta-pill">${item.figura}</span>
-              </div>
-              <div class="bgt-item-output">${item.output}</div>
-            </div>
-            <div class="bgt-tiers">
-              <div class="bgt-tier-btns">
-                <button class="bgt-tier-btn off-btn ${sel==='off'?'active':''}" data-tier="off">Off</button>
-                <button class="bgt-tier-btn ${sel==='T1'?'active':''}" data-tier="T1">T1</button>
-                <button class="bgt-tier-btn ${sel==='T2'?'active':''}" data-tier="T2">T2</button>
-                <button class="bgt-tier-btn ${sel==='T3'?'active':''}" data-tier="T3">T3</button>
-              </div>
-              <div class="bgt-item-cost ${isOff?'deselected-cost':''}">${isOff ? fmt(item.t1.costo) : fmt(tier.costo)}</div>
-              <div class="bgt-item-ore">${isOff ? '' : tier.ore + ' ore'}</div>
-            </div>
-          </div>`;
-      });
-
-      listEl.innerHTML = html;
-
-      // Attach tier button events
-      listEl.querySelectorAll('.bgt-tier-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const card = btn.closest('.bgt-item');
-          const idx = parseInt(card.dataset.idx);
-          state[idx] = btn.dataset.tier;
-          renderList(); renderSidebar();
-        });
-      });
-    }
-
-    function renderSidebar() {
-      if (!selListEl) return;
-      // Group selected items by area
-      const areas = {};
-      let totalCost = 0, totalOre = 0;
-
-      BUDGET_DATA.forEach((item, idx) => {
-        const sel = state[idx];
-        if (sel === 'off') return;
-        const tier = item[sel.toLowerCase()];
-        if (!areas[item.area]) areas[item.area] = [];
-        areas[item.area].push({ name: item.att, tier: sel, costo: tier.costo, ore: tier.ore });
-        totalCost += tier.costo;
-        totalOre += tier.ore;
-      });
-
-      if (Object.keys(areas).length === 0) {
-        selListEl.innerHTML = '<div class="bgt-empty-msg">Nessuna voce.<br>Premi Off su tutto per svuotare, oppure usa un preset.</div>';
-        totalEl.textContent = '€ 0';
-        oreEl.textContent = '0 ore';
-        return;
-      }
-
-      let html = '';
-      for (const [area, rows] of Object.entries(areas)) {
-        const areaCost = rows.reduce((s, r) => s + r.costo, 0);
-        html += `<div class="bgt-sel-group">
-          <div class="bgt-sel-group-label">${area} — ${fmt(areaCost)}</div>`;
-        rows.forEach(r => {
-          html += `<div class="bgt-sel-row">
-            <span class="bgt-sel-row-name">${r.name}</span>
-            <span class="bgt-sel-row-tier">${r.tier}</span>
-            <span class="bgt-sel-row-cost">${fmt(r.costo)}</span>
-          </div>`;
-        });
-        html += '</div>';
-      }
-      selListEl.innerHTML = html;
-      totalEl.textContent = fmt(totalCost);
-      oreEl.textContent = totalOre + ' ore';
-
-      // Update tab badges
-      tabs.forEach(tab => {
-        const area = tab.dataset.area;
-        if (area === 'all') {
-          const hasSel = state.some(s => s !== 'off');
-          tab.classList.toggle('has-selection', hasSel);
-        } else {
-          const hasSel = BUDGET_DATA.some((item, i) => item.area === area && state[i] !== 'off');
-          tab.classList.toggle('has-selection', hasSel);
-        }
-      });
-    }
-
-    // Copy to clipboard
-    copyBtn?.addEventListener('click', () => {
-      const areas = {};
-      let totalCost = 0, totalOre = 0;
-      BUDGET_DATA.forEach((item, idx) => {
-        const sel = state[idx];
-        if (sel === 'off') return;
-        const tier = item[sel.toLowerCase()];
-        if (!areas[item.area]) areas[item.area] = [];
-        areas[item.area].push({ name: item.att, tier: sel, costo: tier.costo, ore: tier.ore });
-        totalCost += tier.costo;
-        totalOre += tier.ore;
-      });
-
-      let text = 'PREVENTIVO PERSONALIZZATO — RIBRAIN × BOBST MASTER M5 MARK II\n';
-      text += '='.repeat(55) + '\n\n';
-      for (const [area, rows] of Object.entries(areas)) {
-        const areaCost = rows.reduce((s, r) => s + r.costo, 0);
-        text += `■ ${area.toUpperCase()} — €${areaCost.toLocaleString('it-IT')}\n`;
-        rows.forEach(r => {
-          text += `  · ${r.name} (${r.tier}) — €${r.costo.toLocaleString('it-IT')} / ${r.ore} ore\n`;
-        });
-        text += '\n';
-      }
-      text += '─'.repeat(40) + '\n';
-      text += `TOTALE: €${totalCost.toLocaleString('it-IT')} / ${totalOre} ore\n`;
-      text += `Ribrain Studio · Proposta BOBST Label · Marzo 2026\n`;
-
-      navigator.clipboard.writeText(text).then(() => {
-        copyBtn.textContent = '✓ Copiato!';
-        copyBtn.classList.add('copied');
-        setTimeout(() => {
-          copyBtn.innerHTML = '📋 Copia riepilogo';
-          copyBtn.classList.remove('copied');
-        }, 2000);
-      }).catch(() => {
-        // Fallback
-        const ta = document.createElement('textarea');
-        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-        document.body.appendChild(ta); ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        copyBtn.textContent = '✓ Copiato!';
-        copyBtn.classList.add('copied');
-        setTimeout(() => { copyBtn.innerHTML = '📋 Copia riepilogo'; copyBtn.classList.remove('copied'); }, 2000);
-      });
-    });
-
-    // Reset
-    resetBtn?.addEventListener('click', () => {
-      for (let i = 0; i < state.length; i++) state[i] = 'off';
-      presetBtns.forEach(b => b.classList.remove('pactive'));
-      renderList(); renderSidebar();
-    });
-
-    // Init with T1 preset active
-    renderList(); renderSidebar();
+    var rbH = document.getElementById('rb-header');
+    if (!rbH) return;
+    var lY = 0;
+    window.addEventListener('scroll', function() {
+      var y = window.scrollY;
+      if (y > lY + 6 && y > 80) rbH.classList.add('hidden');
+      else if (y < lY - 4) rbH.classList.remove('hidden');
+      rbH.classList.toggle('scrolled', y > 60);
+      var hit = document.elementFromPoint(window.innerWidth / 2, 50);
+      var sec = hit && hit.closest('section');
+      rbH.classList.toggle('on-light', !!(sec && (sec.classList.contains('s-light') || sec.classList.contains('s-warm'))));
+      lY = y;
+    }, { passive: true });
   })();
 
+  /* MANAGER PANEL */
+  (function() {
+    var tog = document.getElementById('mgr-toggle');
+    var pan = document.getElementById('mgr-panel');
+    var bak = document.getElementById('mgr-backdrop');
+    var cls = pan && pan.querySelector('.mgr-close');
+    function openM() { document.body.classList.add('mgr-open'); }
+    function closeM() { document.body.classList.remove('mgr-open'); }
+    if (tog) tog.addEventListener('click', openM);
+    if (cls) cls.addEventListener('click', closeM);
+    if (bak) bak.addEventListener('click', closeM);
+    if (pan) pan.querySelectorAll('[data-goto]').forEach(function(l) {
+      l.addEventListener('click', function(e) {
+        e.preventDefault();
+        var t = document.getElementById(l.dataset.goto);
+        if (t) { closeM(); setTimeout(function() { t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 350); }
+      });
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { closeM(); document.body.classList.remove('bgt-open'); }
+    });
+  })();
 
-  /* ─── MANAGER PANEL ───────────────────────────────────────── */
-  const mgrToggle   = document.getElementById('mgr-toggle');
-  const mgrPanel    = document.getElementById('mgr-panel');
-  const mgrBackdrop = document.getElementById('mgr-backdrop');
-  const mgrClose    = mgrPanel?.querySelector('.mgr-close');
+  /* BUDGET EXPLORER */
+  (function() {
+    var D = [{"area": "Strategia", "att": "Raccolta e analisi materiali esistenti", "desc": "Raccolta, revisione e organizzazione di materiali forniti (documentazione tecnica, presentazioni, asset precedenti, linee guida)", "figura": "Strategist / Analyst", "output": "Framework strutturato di lettura e sintesi materiali", "t1": {"ore": 2, "costo": 100}, "t2": {"ore": 2.5, "costo": 125}, "t3": {"ore": 3.0, "costo": 150}}, {"area": "Strategia", "att": "Analisi prodotto e contesto di lancio", "desc": "Analisi del prodotto, della gamma e del contesto competitivo/comunicativo in cui si inserisce il lancio", "figura": "Strategist", "output": "Documento di inquadramento strategico", "t1": {"ore": 2, "costo": 100}, "t2": {"ore": 2.5, "costo": 125}, "t3": {"ore": 3.0, "costo": 150}}, {"area": "Strategia", "att": "Strategic audit & portfolio fit", "desc": "Valutazione coerenza naming, architettura prodotto e posizionamento rispetto al portfolio esistente", "figura": "Strategist", "output": "Output di sintesi strategica e raccomandazioni", "t1": {"ore": 2, "costo": 100}, "t2": {"ore": 2.5, "costo": 125}, "t3": {"ore": 3.0, "costo": 150}}, {"area": "Strategia", "att": "Naming exploration", "desc": "Sviluppo di direttrici naming, territori semantici e possibili logiche di estensione (suffix, naming system)", "figura": "Strategist / Copywriter", "output": "Set di direzioni naming strutturate", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Strategia", "att": "Naming refinement & recommendation", "desc": "Selezione, validazione e rifinitura della proposta naming finale", "figura": "Copywriter / Strategist", "output": "Raccomandazione naming finale con motivazioni strategiche", "t1": {"ore": 4, "costo": 200}, "t2": {"ore": 5.0, "costo": 250}, "t3": {"ore": 6.0, "costo": 300}}, {"area": "Strategia", "att": "Messaging framework", "desc": "Costruzione della value proposition, messaggi chiave e pilastri di comunicazione", "figura": "Copywriter / Strategist", "output": "Messaging hierarchy completa", "t1": {"ore": 20, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Strategia", "att": "Definizione narrativa di lancio", "desc": "Traduzione dei messaggi in narrativa coerente per il lancio del prodotto", "figura": "Copywriter / Strategist", "output": "Narrativa strutturata per utilizzo cross-canale", "t1": {"ore": 20, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Strategia", "att": "Launch concept architecture", "desc": "Ideazione del concept creativo ombrello della campagna di lancio", "figura": "Creative Director / Strategist", "output": "Piattaforma concettuale di campagna", "t1": {"ore": 14, "costo": 700}, "t2": {"ore": 17.5, "costo": 875}, "t3": {"ore": 21.0, "costo": 1050}}, {"area": "Strategia", "att": "Sviluppo linee creative", "desc": "Declinazione delle prime direzioni creative coerenti con il concept", "figura": "Creative Director / Art Director", "output": "Prime ipotesi creative validate", "t1": {"ore": 14, "costo": 700}, "t2": {"ore": 17.5, "costo": 875}, "t3": {"ore": 21.0, "costo": 1050}}, {"area": "Strategia", "att": "Visual territory & moodboard", "desc": "Definizione del territorio visivo, stile, tone of voice visivo e riferimenti creativi", "figura": "Art Director", "output": "Moodboard e visual direction", "t1": {"ore": 6, "costo": 300}, "t2": {"ore": 7.5, "costo": 375}, "t3": {"ore": 9.0, "costo": 450}}, {"area": "Strategia", "att": "Revisione e affinamento strategico", "desc": "Gestione feedback e refinement su naming, concept, messaging e visual direction", "figura": "Account / Strategist", "output": "Round di revisione strategica concordati", "t1": {"ore": 6, "costo": 300}, "t2": {"ore": 7.5, "costo": 375}, "t3": {"ore": 9.0, "costo": 450}}, {"area": "Video", "att": "Scrittura script video", "desc": "Sviluppo script narrativo coerente con concept e messaging", "figura": "Copywriter / Creative Director", "output": "Script video approvabile", "t1": {"ore": 20, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Video", "att": "Storyboard e visualizzazione scene", "desc": "Traduzione dello script in storyboard con indicazioni visive e di regia", "figura": "Copywriter / Creative Director", "output": "Storyboard completo", "t1": {"ore": 20, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Video", "att": "Pianificazione produzione (pre-production)", "desc": "Organizzazione operativa shooting: scaletta, timing, setup, coordinamento risorse", "figura": "Producer / PM", "output": "Piano di produzione dettagliato", "t1": {"ore": 40, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Video", "att": "Definizione art direction", "desc": "Preparazione linee guida visive per lo shooting (inquadrature, luci, stile)", "figura": "Art Director / Creative Director", "output": "Linee guida creative per il set", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video", "att": "Shooting video spot", "desc": "Produzione del video hero con team dedicato", "figura": "Video Team / Director", "output": "Giornata/e di shooting", "t1": {"ore": 60, "costo": 3000}, "t2": {"ore": 75.0, "costo": 3750}, "t3": {"ore": 90.0, "costo": 4500}}, {"area": "Video", "att": "Supervisione creativa sul set", "desc": "Controllo coerenza tra output e concept durante la produzione", "figura": "Creative Director / Art Director", "output": "Supervisione live produzione", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video", "att": "Montaggio video master", "desc": "Editing completo del video principale (hero)", "figura": "Editor / Motion Designer", "output": "Versione master video", "t1": {"ore": 60, "costo": 3000}, "t2": {"ore": 75.0, "costo": 3750}, "t3": {"ore": 90.0, "costo": 4500}}, {"area": "Video", "att": "Motion graphics & title cards", "desc": "Realizzazione grafiche, titolazioni e insert visivi", "figura": "Motion Designer", "output": "Pacchetto grafico video", "t1": {"ore": 40, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Video", "att": "Color grading & sound design", "desc": "Base color correction e ottimizzazione audio", "figura": "Editor", "output": "Output video finalizzato", "t1": {"ore": 20, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Video", "att": "Localizzazione sottotitoli", "desc": "Creazione e adattamento sottotitoli (EFIGS base)", "figura": "Copywriter / Editor", "output": "File sottotitoli + versionamento", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video", "att": "Revisioni e fine tuning", "desc": "Gestione feedback e ottimizzazione finale", "figura": "Editor / PM", "output": "Round di revisione concordati", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video", "att": "Export e finalizzazione", "desc": "Preparazione formati finali e file consegna", "figura": "Editor", "output": "Pacchetto export finale", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Asset di lancio", "att": "Sales asset base", "desc": "Realizzazione materiale sintetico a supporto del team commerciale", "figura": "Designer / Copywriter", "output": "One-pager o asset commerciale light", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Asset di lancio", "att": "Cutdown video", "desc": "Adattamento del video master in versioni brevi per utilizzo digital", "figura": "Editor", "output": "Set di cutdown video", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Asset di lancio", "att": "Adattamenti digital base", "desc": "Adattamento asset per touchpoint digital principali", "figura": "Designer", "output": "Formati base per utilizzo digital", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Creative toolkit esteso", "desc": "Sviluppo sistema completo di asset, layout, regole visive e applicazioni multi-touchpoint", "figura": "Creative Director / Art Director / Designer", "output": "Da definire e quotare a parte per variabilità", "t1": {"ore": 32, "costo": 1600}, "t2": {"ore": 40.0, "costo": 2000}, "t3": {"ore": 48.0, "costo": 2400}}, {"area": "Contenuti", "att": "Key visual system esteso", "desc": "Sviluppo di più key visual e relative estensioni", "figura": "Art Director / Designer", "output": "Set key visual aggiuntivi", "t1": {"ore": 24, "costo": 1200}, "t2": {"ore": 30.0, "costo": 1500}, "t3": {"ore": 36.0, "costo": 1800}}, {"area": "Contenuti", "att": "Photo shooting dedicato", "desc": "Produzione fotografica prodotto / applicazioni", "figura": "Photographer / Art Director", "output": "Shooting fotografico", "t1": {"ore": 40, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Contenuti", "att": "Photo editing & post-produzione", "desc": "Ritocco, color correction e finalizzazione immagini", "figura": "Retoucher / Designer", "output": "Output fotografico finalizzato", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Open house concept", "desc": "Ideazione concept creativo per evento di lancio", "figura": "Creative Director / Designer", "output": "Concept evento", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Open house asset", "desc": "Realizzazione materiali master a supporto dell’evento", "figura": "Designer / Copywriter", "output": "Asset evento", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Open house support operativo", "desc": "Supporto alla costruzione dei materiali per l’evento", "figura": "Account / Designer / PM", "output": "Non include produzione fisica", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Contenuti", "att": "Extended adaptation pack", "desc": "Adattamenti aggiuntivi per canali, formati e touchpoint", "figura": "Designer / Editor", "output": "Pacchetto adattamenti extra", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Contenuti", "att": "Render / compositing avanzato", "desc": "Produzione visual avanzati o interventi compositing", "figura": "Designer / Motion Designer", "output": "Da valutare per complessità", "t1": {"ore": 32, "costo": 1600}, "t2": {"ore": 40.0, "costo": 2000}, "t3": {"ore": 48.0, "costo": 2400}}, {"area": "Contenuti", "att": "Localizzazioni aggiuntive", "desc": "Adattamenti linguistici oltre al perimetro base", "figura": "Copywriter / Editor", "output": "Versioni linguistiche aggiuntive", "t1": {"ore": 24, "costo": 1200}, "t2": {"ore": 30.0, "costo": 1500}, "t3": {"ore": 36.0, "costo": 1800}}, {"area": "Video Demo", "att": "Demo video — allineamento contenuti", "desc": "Definizione obiettivi, contenuti da mostrare e struttura demo", "figura": "Account / Strategist", "output": "Allineamento contenuti demo", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — raccolta materiali", "desc": "Raccolta materiali tecnici, input prodotto e flussi operativi da rappresentare", "figura": "Strategist / PM", "output": "Input strutturati per produzione", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — script tecnico", "desc": "Scrittura script orientato a spiegazione funzionale del prodotto", "figura": "Copywriter / Strategist", "output": "Script demo approvabile", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — storyboard operativo", "desc": "Definizione sequenze, inquadrature e flussi dimostrativi", "figura": "Creative Director / Video Team", "output": "Storyboard tecnico", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — pianificazione produzione", "desc": "Organizzazione shooting demo (setup, tempi, materiali)", "figura": "Producer / PM", "output": "Piano operativo demo", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — shooting demo", "desc": "Riprese dedicate alla dimostrazione del prodotto", "figura": "Video Team / Director", "output": "Giornata/e di shooting demo", "t1": {"ore": 80, "costo": 4000}, "t2": {"ore": 100.0, "costo": 5000}, "t3": {"ore": 120.0, "costo": 6000}}, {"area": "Video Demo", "att": "Demo video — supervisione tecnica", "desc": "Verifica correttezza contenuti durante riprese", "figura": "Strategist / Cliente", "output": "Supervisione contenuti", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — montaggio tecnico", "desc": "Editing orientato alla chiarezza e comprensione del prodotto", "figura": "Editor", "output": "Versione demo video", "t1": {"ore": 40, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Video Demo", "att": "Demo video — grafiche esplicative", "desc": "Inserimento elementi grafici, callout, highlight funzionali", "figura": "Motion Designer", "output": "Grafiche esplicative", "t1": {"ore": 16, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — sottotitoli e localizzazione", "desc": "Adattamento linguistico e sottotitoli", "figura": "Copywriter / Editor", "output": "File sottotitoli", "t1": {"ore": 12, "costo": 600}, "t2": {"ore": 15.0, "costo": 750}, "t3": {"ore": 18.0, "costo": 900}}, {"area": "Video Demo", "att": "Demo video — revisioni", "desc": "Gestione feedback e ottimizzazione finale", "figura": "Editor / PM", "output": "Round revisioni demo", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — export e consegna", "desc": "Finalizzazione file e consegna strutturata", "figura": "Editor", "output": "File finali demo", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Chiusura", "att": "QA & delivery finale", "desc": "Controllo qualità finale, organizzazione file e consegna strutturata", "figura": "Editor / PM", "output": "Pacchetto file ordinato e documentato", "t1": {"ore": 8, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Project Management", "att": "Gestione e coordinamento progetto", "desc": "Gestione flussi, avanzamento, coordinamento team, feedback e delivery", "figura": "Account / PM", "output": "Gestione end-to-end del progetto", "t1": {"ore": 40, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}];
+    var AREAS = [];
+    D.forEach(function(d) { if (AREAS.indexOf(d.area) === -1) AREAS.push(d.area); });
+    var S = D.map(function() { return 'T1'; });
 
-  function openMgr()  { document.body.classList.add('mgr-open'); }
-  function closeMgr() { document.body.classList.remove('mgr-open'); }
+    var overlay = document.getElementById('bgt-overlay');
+    var btnO    = document.getElementById('budget-toggle');
+    var btnC    = overlay && overlay.querySelector('.bgt-x');
+    var tbody   = document.getElementById('bgt-body');
+    var ftVal   = document.getElementById('bft-val');
+    var ftOre   = document.getElementById('bft-ore');
+    var copyBtn = document.getElementById('bft-copy');
+    var rstBtn  = document.getElementById('bft-rst');
+    var pBtns   = document.querySelectorAll('.bgt-p-btn');
+    if (!overlay) return;
 
-  if (mgrToggle)   mgrToggle.addEventListener('click', openMgr);
-  if (mgrClose)    mgrClose.addEventListener('click', closeMgr);
-  if (mgrBackdrop) mgrBackdrop.addEventListener('click', closeMgr);
+    function fmt(n) { return '€ ' + n.toLocaleString('it-IT'); }
+    function openB()  { document.body.classList.add('bgt-open'); render(); }
+    function closeB() { document.body.classList.remove('bgt-open'); }
+    if (btnO) btnO.addEventListener('click', openB);
+    if (btnC) btnC.addEventListener('click', closeB);
 
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && document.body.classList.contains('mgr-open')) closeMgr();
-  });
+    pBtns.forEach(function(b) {
+      b.addEventListener('click', function() {
+        pBtns.forEach(function(x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        var p = b.dataset.p;
+        for (var i = 0; i < S.length; i++) S[i] = (p === 'OFF') ? 'off' : p;
+        render();
+      });
+    });
 
-  /* "Vai alla sezione" links inside panel */
-  mgrPanel?.querySelectorAll('[data-goto]').forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault();
-      const id = link.getAttribute('data-goto');
-      const target = document.getElementById(id);
-      if (target) {
-        closeMgr();
-        setTimeout(() => {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 350);
+    function getAreaCost(area) {
+      var cost = 0, ore = 0;
+      D.forEach(function(d, i) {
+        if (d.area !== area || S[i] === 'off') return;
+        var t = d[S[i].toLowerCase()];
+        cost += t.costo; ore += t.ore;
+      });
+      return { cost: cost, ore: ore };
+    }
+
+    function getTotal() {
+      var cost = 0, ore = 0, cnt = 0;
+      D.forEach(function(d, i) {
+        if (S[i] === 'off') return;
+        var t = d[S[i].toLowerCase()];
+        cost += t.costo; ore += t.ore; cnt++;
+      });
+      return { cost: cost, ore: ore, cnt: cnt };
+    }
+
+    function render() {
+      if (!tbody) return;
+      var rows = '';
+      AREAS.forEach(function(area) {
+        rows += '<tr class="rg"><td colspan="6">' + area + '</td></tr>';
+        D.forEach(function(d, i) {
+          if (d.area !== area) return;
+          var sel = S[i], isOff = (sel === 'off');
+          var selCost = isOff ? null : d[sel.toLowerCase()].costo;
+          var r = '<tr class="ri' + (isOff ? ' off' : '') + '" data-i="' + i + '">';
+          r += '<td><div class="an">' + d.att + '</div><div class="as">' + d.desc + '</div><span class="af">' + d.figura + '</span></td>';
+          ['T1','T2','T3'].forEach(function(tier) {
+            var t = d[tier.toLowerCase()];
+            var isSel = (sel === tier);
+            var isDim = (!isOff && !isSel);
+            r += '<td class="tt" data-i="' + i + '" data-t="' + tier + '">';
+            r += '<div class="tb' + (isSel ? ' sel' : '') + (isDim ? ' dim' : '') + '">';
+            r += '<div class="tl">' + tier + '</div>';
+            r += '<div class="tp">' + t.costo.toLocaleString('it-IT') + '</div>';
+            r += '<div class="to">' + t.ore + ' ore</div>';
+            r += '</div></td>';
+          });
+          r += '<td class="tsc' + (isOff ? ' none' : '') + '">' + (isOff ? '—' : fmt(selCost)) + '</td>';
+          r += '<td class="tx" data-i="' + i + '"><div class="txb" title="' + (isOff ? 'Includi' : 'Rimuovi') + '">' + (isOff ? '+' : '✕') + '</div></td>';
+          r += '</tr>';
+          rows += r;
+        });
+        var ac = getAreaCost(area);
+        rows += '<tr class="rs"><td>Subtotale ' + area + '</td>';
+        rows += '<td colspan="3" style="color:var(--text-muted);font-size:10px">' + ac.ore + ' ore selezionate</td>';
+        rows += '<td class="rsr">' + (ac.cost > 0 ? fmt(ac.cost) : '—') + '</td><td></td></tr>';
+      });
+      tbody.innerHTML = rows;
+
+      tbody.querySelectorAll('.tt').forEach(function(c) {
+        c.addEventListener('click', function() {
+          var i = parseInt(c.dataset.i), tier = c.dataset.t;
+          S[i] = (S[i] === tier) ? 'off' : tier;
+          render();
+        });
+      });
+      tbody.querySelectorAll('.tx').forEach(function(c) {
+        c.addEventListener('click', function() {
+          var i = parseInt(c.dataset.i);
+          S[i] = (S[i] === 'off') ? 'T1' : 'off';
+          render();
+        });
+      });
+
+      var tot = getTotal();
+      ftVal.textContent = fmt(tot.cost);
+      ftOre.textContent = tot.ore + ' ore · ' + tot.cnt + ' attività';
+    }
+
+    if (copyBtn) copyBtn.addEventListener('click', function() {
+      var txt = 'PREVENTIVO\nRibrain × BOBST MASTER M5 MARK II\n' + '='.repeat(44) + '\n\n';
+      AREAS.forEach(function(area) {
+        var aRows = [], ac = 0;
+        D.forEach(function(d, i) {
+          if (d.area !== area || S[i] === 'off') return;
+          var t = d[S[i].toLowerCase()];
+          aRows.push({ att: d.att, tier: S[i], costo: t.costo, ore: t.ore });
+          ac += t.costo;
+        });
+        if (!aRows.length) return;
+        txt += '■ ' + area.toUpperCase() + ' — ' + fmt(ac) + '\n';
+        aRows.forEach(function(r) { txt += '  · ' + r.att + ' (' + r.tier + ') — ' + fmt(r.costo) + ' / ' + r.ore + ' ore\n'; });
+        txt += '\n';
+      });
+      var tot = getTotal();
+      txt += '─'.repeat(36) + '\nTOTALE: ' + fmt(tot.cost) + ' / ' + tot.ore + ' ore\nRibrain Studio · Marzo 2026\n';
+      var done = function() {
+        var prev = copyBtn.textContent; copyBtn.textContent = '✓ Copiato!'; copyBtn.classList.add('ok');
+        setTimeout(function() { copyBtn.textContent = prev; copyBtn.classList.remove('ok'); }, 2200);
+      };
+      if (navigator.clipboard) { navigator.clipboard.writeText(txt).then(done).catch(done); }
+      else {
+        var ta = document.createElement('textarea'); ta.value = txt; ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done();
       }
     });
-  });
+
+    if (rstBtn) rstBtn.addEventListener('click', function() {
+      for (var i = 0; i < S.length; i++) S[i] = 'off';
+      pBtns.forEach(function(b) { b.classList.remove('on'); });
+      render();
+    });
+
+    render();
+  })();
 
 })();
 </script>
