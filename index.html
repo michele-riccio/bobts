@@ -1491,6 +1491,315 @@ section { padding: clamp(80px,10vw,140px) 0; }
 .qa-item .qa-note { font-family: var(--sans); font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; margin-top: 8px; font-style: italic; border-top: 1px solid rgba(0,0,0,.07); padding-top: 8px; }
 @media(max-width:680px){ .qa-grid { grid-template-columns: 1fr; } }
 
+
+/* ──────────────────────────────────────────────────────────
+   BUDGET EXPLORER — FULL SCREEN OVERLAY
+   ────────────────────────────────────────────────────────── */
+
+/* Second button next to Manager View */
+#budget-toggle {
+  position: fixed;
+  bottom: 28px; right: 188px;
+  z-index: 900;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--cream);
+  color: var(--navy);
+  border: 1.5px solid var(--navy);
+  font-family: var(--sans);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 12px 20px; border-radius: 6px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.18);
+  cursor: pointer;
+  transition: background .2s, color .2s, transform .2s;
+}
+#budget-toggle:hover { background: var(--navy); color: #fff; transform: translateY(-2px); }
+#budget-toggle .bgt-icon { font-size: 13px; color: var(--red); }
+body.bgt-open #budget-toggle { opacity: 0; pointer-events: none; }
+body.mgr-open #budget-toggle { opacity: 0; pointer-events: none; }
+
+/* Full overlay */
+#bgt-overlay {
+  position: fixed; inset: 0;
+  z-index: 960;
+  background: var(--cream);
+  display: flex; flex-direction: column;
+  transform: translateY(100%);
+  transition: transform .45s cubic-bezier(.25,.46,.45,.94);
+}
+body.bgt-open #bgt-overlay { transform: translateY(0); }
+
+/* Top bar */
+#bgt-bar {
+  background: var(--navy);
+  height: 56px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px;
+  border-bottom: 2px solid var(--red);
+}
+.bgt-bar-title {
+  font-family: var(--serif);
+  font-size: 16px; color: #fff;
+  display: flex; align-items: center; gap: 10px;
+}
+.bgt-bar-title em { color: var(--red); font-style: normal; }
+.bgt-bar-subtitle { font-size: 11px; color: rgba(255,255,255,.4); letter-spacing: .08em; margin-left: 4px; }
+.bgt-close {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: rgba(255,255,255,.08);
+  color: #fff; font-size: 18px; cursor: pointer;
+  transition: background .2s;
+}
+.bgt-close:hover { background: rgba(255,255,255,.15); }
+
+/* Area tabs */
+#bgt-tabs {
+  background: var(--navy);
+  display: flex; align-items: center;
+  padding: 0 28px; gap: 4px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+#bgt-tabs::-webkit-scrollbar { display: none; }
+.bgt-tab {
+  font-family: var(--sans);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 12px 16px;
+  color: rgba(255,255,255,.35);
+  border-bottom: 2px solid transparent;
+  cursor: pointer; white-space: nowrap;
+  transition: color .2s, border-color .2s;
+}
+.bgt-tab:hover { color: rgba(255,255,255,.7); }
+.bgt-tab.active { color: #fff; border-bottom-color: var(--red); }
+.bgt-tab .bgt-tab-total {
+  display: inline-block;
+  margin-left: 6px; padding: 2px 7px;
+  border-radius: 100px;
+  background: rgba(255,255,255,.08);
+  font-size: 9px; font-weight: 700;
+  transition: background .2s, color .2s;
+}
+.bgt-tab.has-selection .bgt-tab-total {
+  background: var(--red); color: #fff;
+}
+
+/* Main content area */
+#bgt-main {
+  flex: 1; display: flex; overflow: hidden;
+}
+
+/* Items list */
+#bgt-list {
+  flex: 1; overflow-y: auto;
+  padding: 20px 24px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+#bgt-list::-webkit-scrollbar { width: 4px; }
+#bgt-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 2px; }
+
+/* Item card */
+.bgt-item {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.07);
+  border-radius: 8px;
+  padding: 16px 18px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.bgt-item.selected {
+  border-color: var(--red);
+  box-shadow: 0 0 0 1px var(--red), 0 2px 12px rgba(192,57,43,.1);
+}
+.bgt-item.deselected { opacity: .45; }
+.bgt-item-left { display: flex; flex-direction: column; gap: 4px; }
+.bgt-item-name {
+  font-size: 13px; font-weight: 600;
+  color: var(--navy); line-height: 1.3;
+}
+.bgt-item-desc {
+  font-size: 11px; color: var(--text-muted);
+  line-height: 1.5; margin-top: 2px;
+}
+.bgt-item-meta {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;
+}
+.bgt-meta-pill {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 100px;
+  background: var(--warm); color: var(--text-muted);
+}
+.bgt-item-output {
+  font-size: 10px; font-style: italic;
+  color: var(--text-faint); margin-top: 4px; line-height: 1.4;
+}
+
+/* Tier selector */
+.bgt-tiers {
+  display: flex; flex-direction: column; gap: 6px;
+  align-items: flex-end; flex-shrink: 0;
+}
+.bgt-tier-btns {
+  display: flex; gap: 4px;
+}
+.bgt-tier-btn {
+  font-family: var(--sans);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 6px 11px;
+  border-radius: 4px;
+  border: 1.5px solid rgba(0,0,0,.1);
+  background: transparent; color: var(--text-muted);
+  cursor: pointer;
+  transition: all .18s;
+}
+.bgt-tier-btn:hover { border-color: var(--red); color: var(--red); }
+.bgt-tier-btn.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+.bgt-tier-btn.off-btn { border-color: rgba(0,0,0,.06); }
+.bgt-tier-btn.off-btn.active { background: rgba(0,0,0,.08); border-color: rgba(0,0,0,.15); color: var(--text-muted); }
+.bgt-item-cost {
+  font-family: var(--serif);
+  font-size: 17px; color: var(--navy);
+  text-align: right; white-space: nowrap;
+}
+.bgt-item-cost.deselected-cost { text-decoration: line-through; color: var(--text-faint); }
+.bgt-item-ore {
+  font-size: 9px; color: var(--text-faint);
+  text-align: right; letter-spacing: .06em;
+}
+
+/* Right sidebar — La tua selezione */
+#bgt-sidebar {
+  width: 300px; flex-shrink: 0;
+  border-left: 1px solid rgba(0,0,0,.08);
+  background: var(--warm);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.bgt-sidebar-head {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid rgba(0,0,0,.07);
+}
+.bgt-sidebar-head h3 {
+  font-family: var(--serif);
+  font-size: 15px; font-weight: 400; color: var(--navy);
+}
+.bgt-sidebar-head p {
+  font-size: 10px; color: var(--text-muted);
+  letter-spacing: .06em; margin-top: 2px;
+}
+#bgt-sel-list {
+  flex: 1; overflow-y: auto;
+  padding: 12px 20px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+#bgt-sel-list::-webkit-scrollbar { width: 3px; }
+#bgt-sel-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,.1); }
+.bgt-sel-group { margin-bottom: 4px; }
+.bgt-sel-group-label {
+  font-size: 9px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--red);
+  margin-bottom: 4px; margin-top: 8px;
+}
+.bgt-sel-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 11px; padding: 3px 0;
+  border-bottom: 1px solid rgba(0,0,0,.04);
+  gap: 8px;
+}
+.bgt-sel-row-name { color: var(--text-body); flex: 1; line-height: 1.3; }
+.bgt-sel-row-tier {
+  font-size: 9px; font-weight: 700; letter-spacing: .08em;
+  color: var(--red); flex-shrink: 0;
+}
+.bgt-sel-row-cost {
+  font-size: 11px; font-weight: 600; color: var(--navy);
+  flex-shrink: 0; font-variant-numeric: tabular-nums;
+}
+.bgt-empty-msg {
+  text-align: center; padding: 32px 16px;
+  font-size: 12px; color: var(--text-faint);
+  line-height: 1.6;
+}
+
+/* Sidebar footer */
+#bgt-sidebar-foot {
+  border-top: 2px solid var(--navy);
+  padding: 16px 20px;
+  background: var(--warm);
+}
+.bgt-total-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 14px;
+}
+.bgt-total-lbl {
+  font-size: 10px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--navy);
+}
+.bgt-total-val {
+  font-family: var(--serif);
+  font-size: 26px; color: var(--navy); line-height: 1;
+}
+.bgt-ore-total {
+  font-size: 10px; color: var(--text-muted);
+  margin-top: 2px; text-align: right;
+}
+.bgt-actions { display: flex; gap: 8px; margin-top: 12px; }
+.bgt-btn-copy {
+  flex: 1;
+  font-family: var(--sans);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 10px 14px;
+  background: var(--navy); color: #fff;
+  border-radius: 5px; cursor: pointer;
+  transition: background .2s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.bgt-btn-copy:hover { background: #1a2d42; }
+.bgt-btn-copy.copied { background: #27ae60; }
+.bgt-btn-reset {
+  font-family: var(--sans);
+  font-size: 10px; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 10px 12px;
+  background: transparent; color: var(--text-muted);
+  border: 1.5px solid rgba(0,0,0,.12);
+  border-radius: 5px; cursor: pointer;
+  transition: all .2s;
+}
+.bgt-btn-reset:hover { border-color: var(--red); color: var(--red); }
+
+/* Preset row */
+.bgt-preset-row {
+  display: flex; gap: 6px; margin-bottom: 12px;
+  padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,.07);
+}
+.bgt-preset-btn {
+  flex: 1;
+  font-size: 9px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; padding: 7px 6px;
+  border-radius: 4px; cursor: pointer;
+  border: 1.5px solid rgba(0,0,0,.1);
+  background: transparent; color: var(--text-muted);
+  transition: all .2s; text-align: center;
+}
+.bgt-preset-btn:hover { border-color: var(--navy); color: var(--navy); }
+.bgt-preset-btn.pactive { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+@media (max-width: 768px) {
+  #bgt-sidebar { display: none; }
+  #bgt-tabs { padding: 0 16px; }
+  #bgt-list { padding: 16px; }
+}
+
+
 /* ──────────────────────────────────────────────────────────
    RIBRAIN HEADER
    ────────────────────────────────────────────────────────── */
@@ -1766,6 +2075,95 @@ body.mgr-open #mgr-backdrop { opacity: 1; pointer-events: auto; }
   </div>
   <div class="rb-right"><strong>BOBST Label</strong> · Proposta Strategica · 2026</div>
 </header>
+
+
+<!-- ═══ BUDGET EXPLORER ═══ -->
+<button id="budget-toggle" aria-label="Apri Budget Explorer">
+  <span class="bgt-icon">€</span> Budget
+</button>
+
+<div id="bgt-overlay" role="dialog" aria-label="Budget Explorer">
+  <!-- Top bar -->
+  <div id="bgt-bar">
+    <div class="bgt-bar-title">
+      € <em>Budget</em> Explorer
+      <span class="bgt-bar-subtitle">Componi il tuo preventivo</span>
+    </div>
+    <button class="bgt-close" aria-label="Chiudi">&times;</button>
+  </div>
+
+  <!-- Area Tabs -->
+  <div id="bgt-tabs">
+    <div class="bgt-tab active" data-area="all">
+      Tutto <span class="bgt-tab-total">51</span>
+    </div>
+    <div class="bgt-tab" data-area="Strategia">
+      Strategia <span class="bgt-tab-total">12</span>
+    </div>
+    <div class="bgt-tab" data-area="Video">
+      Video <span class="bgt-tab-total">12</span>
+    </div>
+    <div class="bgt-tab" data-area="Asset di lancio">
+      Asset Lancio <span class="bgt-tab-total">3</span>
+    </div>
+    <div class="bgt-tab" data-area="Contenuti">
+      Contenuti <span class="bgt-tab-total">10</span>
+    </div>
+    <div class="bgt-tab" data-area="Video Demo">
+      Video Demo <span class="bgt-tab-total">12</span>
+    </div>
+    <div class="bgt-tab" data-area="Chiusura">
+      Chiusura <span class="bgt-tab-total">1</span>
+    </div>
+    <div class="bgt-tab" data-area="Project Management">
+      PM <span class="bgt-tab-total">1</span>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div id="bgt-main">
+    <!-- Items list -->
+    <div id="bgt-list"></div>
+
+    <!-- Sidebar -->
+    <div id="bgt-sidebar">
+      <div class="bgt-sidebar-head">
+        <h3>La tua selezione</h3>
+        <p>Seleziona le voci e scegli il tier</p>
+      </div>
+
+      <!-- Preset row inside sidebar head area -->
+      <div style="padding: 12px 20px 0; border-bottom: 1px solid rgba(0,0,0,.07);">
+        <div style="font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px;">Preset rapido</div>
+        <div class="bgt-preset-row">
+          <button class="bgt-preset-btn pactive" data-preset="T1">T1</button>
+          <button class="bgt-preset-btn" data-preset="T2">T2</button>
+          <button class="bgt-preset-btn" data-preset="T3">T3</button>
+          <button class="bgt-preset-btn" data-preset="OFF">Svuota</button>
+        </div>
+      </div>
+
+      <div id="bgt-sel-list">
+        <div class="bgt-empty-msg">Nessuna voce selezionata.<br>Usa i pulsanti T1/T2/T3 su ogni attività.</div>
+      </div>
+
+      <div id="bgt-sidebar-foot">
+        <div class="bgt-total-row">
+          <div>
+            <div class="bgt-total-lbl">Totale selezionato</div>
+            <div class="bgt-ore-total" id="bgt-ore-total">0 ore</div>
+          </div>
+          <div class="bgt-total-val" id="bgt-total">€ 0</div>
+        </div>
+        <div class="bgt-actions">
+          <button class="bgt-btn-copy" id="bgt-copy-btn">📋 Copia riepilogo</button>
+          <button class="bgt-btn-reset" id="bgt-reset-btn">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- ═══ MANAGER PANEL — SLIDE-IN ═══ -->
 <button id="mgr-toggle" aria-label="Apri Manager View">
@@ -4984,6 +5382,236 @@ body.mgr-open #mgr-backdrop { opacity: 1; pointer-events: auto; }
       lastY = y;
     }, { passive: true });
   }
+
+
+  /* ─── BUDGET EXPLORER ──────────────────────────────────────── */
+  (function() {
+    const BUDGET_DATA = [{"area": "Strategia", "att": "Kick-off & allineamento iniziale", "desc": "Allineamento su obiettivi di business, perimetro progettuale, stakeholder coinvolti, flussi decisionali e modalità operative", "figura": "Account Director / Strategist", "output": "Riunione di kick-off + documento di recap e allineamento condiviso", "t1": {"ore": 10.0, "costo": 500}, "t2": {"ore": 12.5, "costo": 625}, "t3": {"ore": 15.0, "costo": 750}}, {"area": "Strategia", "att": "Raccolta e analisi materiali esistenti", "desc": "Raccolta, revisione e organizzazione di materiali forniti (documentazione tecnica, presentazioni, asset precedenti, linee guida)", "figura": "Strategist / Analyst", "output": "Framework strutturato di lettura e sintesi materiali", "t1": {"ore": 2.0, "costo": 100}, "t2": {"ore": 2.5, "costo": 125}, "t3": {"ore": 3.0, "costo": 150}}, {"area": "Strategia", "att": "Analisi prodotto e contesto di lancio", "desc": "Analisi del prodotto, della gamma e del contesto competitivo/comunicativo in cui si inserisce il lancio", "figura": "Strategist", "output": "Documento di inquadramento strategico", "t1": {"ore": 2.0, "costo": 100}, "t2": {"ore": 2.5, "costo": 125}, "t3": {"ore": 3.0, "costo": 150}}, {"area": "Strategia", "att": "Strategic audit & portfolio fit", "desc": "Valutazione coerenza naming, architettura prodotto e posizionamento rispetto al portfolio esistente", "figura": "Strategist", "output": "Output di sintesi strategica e raccomandazioni", "t1": {"ore": 2.0, "costo": 100}, "t2": {"ore": 2.5, "costo": 125}, "t3": {"ore": 3.0, "costo": 150}}, {"area": "Strategia", "att": "Naming exploration", "desc": "Sviluppo di direttrici naming, territori semantici e possibili logiche di estensione (suffix, naming system)", "figura": "Strategist / Copywriter", "output": "Set di direzioni naming strutturate", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Strategia", "att": "Naming refinement & recommendation", "desc": "Selezione, validazione e rifinitura della proposta naming finale", "figura": "Copywriter / Strategist", "output": "Raccomandazione naming finale con motivazioni strategiche", "t1": {"ore": 4.0, "costo": 200}, "t2": {"ore": 5.0, "costo": 250}, "t3": {"ore": 6.0, "costo": 300}}, {"area": "Strategia", "att": "Messaging framework", "desc": "Costruzione della value proposition, messaggi chiave e pilastri di comunicazione", "figura": "Copywriter / Strategist", "output": "Messaging hierarchy completa", "t1": {"ore": 20.0, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Strategia", "att": "Definizione narrativa di lancio", "desc": "Traduzione dei messaggi in narrativa coerente per il lancio del prodotto", "figura": "Copywriter / Strategist", "output": "Narrativa strutturata per utilizzo cross-canale", "t1": {"ore": 20.0, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Strategia", "att": "Launch concept architecture", "desc": "Ideazione del concept creativo ombrello della campagna di lancio", "figura": "Creative Director / Strategist", "output": "Piattaforma concettuale di campagna", "t1": {"ore": 14.0, "costo": 700}, "t2": {"ore": 17.5, "costo": 875}, "t3": {"ore": 21.0, "costo": 1050}}, {"area": "Strategia", "att": "Sviluppo linee creative", "desc": "Declinazione delle prime direzioni creative coerenti con il concept", "figura": "Creative Director / Art Director", "output": "Prime ipotesi creative validate", "t1": {"ore": 14.0, "costo": 700}, "t2": {"ore": 17.5, "costo": 875}, "t3": {"ore": 21.0, "costo": 1050}}, {"area": "Strategia", "att": "Visual territory & moodboard", "desc": "Definizione del territorio visivo, stile, tone of voice visivo e riferimenti creativi", "figura": "Art Director", "output": "Moodboard e visual direction", "t1": {"ore": 6.0, "costo": 300}, "t2": {"ore": 7.5, "costo": 375}, "t3": {"ore": 9.0, "costo": 450}}, {"area": "Strategia", "att": "Revisione e affinamento strategico", "desc": "Gestione feedback e refinement su naming, concept, messaging e visual direction", "figura": "Account / Strategist", "output": "Round di revisione strategica concordati", "t1": {"ore": 6.0, "costo": 300}, "t2": {"ore": 7.5, "costo": 375}, "t3": {"ore": 9.0, "costo": 450}}, {"area": "Video", "att": "Scrittura script video", "desc": "Sviluppo script narrativo coerente con concept e messaging", "figura": "Copywriter / Creative Director", "output": "Script video approvabile", "t1": {"ore": 20.0, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Video", "att": "Storyboard e visualizzazione scene", "desc": "Traduzione dello script in storyboard con indicazioni visive e di regia", "figura": "Copywriter / Creative Director", "output": "Storyboard completo", "t1": {"ore": 20.0, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Video", "att": "Pianificazione produzione (pre-production)", "desc": "Organizzazione operativa shooting: scaletta, timing, setup, coordinamento risorse", "figura": "Producer / PM", "output": "Piano di produzione dettagliato", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Video", "att": "Definizione art direction", "desc": "Preparazione linee guida visive per lo shooting (inquadrature, luci, stile)", "figura": "Art Director / Creative Director", "output": "Linee guida creative per il set", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video", "att": "Shooting video spot", "desc": "Produzione del video hero con team dedicato", "figura": "Video Team / Director", "output": "Giornata/e di shooting", "t1": {"ore": 60.0, "costo": 3000}, "t2": {"ore": 75.0, "costo": 3750}, "t3": {"ore": 90.0, "costo": 4500}}, {"area": "Video", "att": "Supervisione creativa sul set", "desc": "Controllo coerenza tra output e concept durante la produzione", "figura": "Creative Director / Art Director", "output": "Supervisione live produzione", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video", "att": "Montaggio video master", "desc": "Editing completo del video principale (hero)", "figura": "Editor / Motion Designer", "output": "Versione master video", "t1": {"ore": 60.0, "costo": 3000}, "t2": {"ore": 75.0, "costo": 3750}, "t3": {"ore": 90.0, "costo": 4500}}, {"area": "Video", "att": "Motion graphics & title cards", "desc": "Realizzazione grafiche, titolazioni e insert visivi", "figura": "Motion Designer", "output": "Pacchetto grafico video", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Video", "att": "Color grading & sound design", "desc": "Base color correction e ottimizzazione audio", "figura": "Editor", "output": "Output video finalizzato", "t1": {"ore": 20.0, "costo": 1000}, "t2": {"ore": 25.0, "costo": 1250}, "t3": {"ore": 30.0, "costo": 1500}}, {"area": "Video", "att": "Localizzazione sottotitoli", "desc": "Creazione e adattamento sottotitoli (EFIGS base)", "figura": "Copywriter / Editor", "output": "File sottotitoli + versionamento", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video", "att": "Revisioni e fine tuning", "desc": "Gestione feedback e ottimizzazione finale", "figura": "Editor / PM", "output": "Round di revisione concordati", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video", "att": "Export e finalizzazione", "desc": "Preparazione formati finali e file consegna", "figura": "Editor", "output": "Pacchetto export finale", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Asset di lancio", "att": "Sales asset base", "desc": "Realizzazione materiale sintetico a supporto del team commerciale", "figura": "Designer / Copywriter", "output": "One-pager o asset commerciale light", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Asset di lancio", "att": "Cutdown video", "desc": "Adattamento del video master in versioni brevi per utilizzo digital", "figura": "Editor", "output": "Set di cutdown video", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Asset di lancio", "att": "Adattamenti digital base", "desc": "Adattamento asset per touchpoint digital principali", "figura": "Designer", "output": "Formati base per utilizzo digital", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Creative toolkit esteso", "desc": "Sviluppo sistema completo di asset, layout, regole visive e applicazioni multi-touchpoint", "figura": "Creative Director / Art Director / Designer", "output": "Da definire e quotare a parte per variabilità", "t1": {"ore": 32.0, "costo": 1600}, "t2": {"ore": 40.0, "costo": 2000}, "t3": {"ore": 48.0, "costo": 2400}}, {"area": "Contenuti", "att": "Key visual system esteso", "desc": "Sviluppo di più key visual e relative estensioni", "figura": "Art Director / Designer", "output": "Set key visual aggiuntivi", "t1": {"ore": 24.0, "costo": 1200}, "t2": {"ore": 30.0, "costo": 1500}, "t3": {"ore": 36.0, "costo": 1800}}, {"area": "Contenuti", "att": "Photo shooting dedicato", "desc": "Produzione fotografica prodotto / applicazioni", "figura": "Photographer / Art Director", "output": "Shooting fotografico", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Contenuti", "att": "Photo editing & post-produzione", "desc": "Ritocco, color correction e finalizzazione immagini", "figura": "Retoucher / Designer", "output": "Output fotografico finalizzato", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Open house concept", "desc": "Ideazione concept creativo per evento di lancio", "figura": "Creative Director / Designer", "output": "Concept evento", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Open house asset", "desc": "Realizzazione materiali master a supporto dell’evento", "figura": "Designer / Copywriter", "output": "Asset evento", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Contenuti", "att": "Open house support operativo", "desc": "Supporto alla costruzione dei materiali per l’evento", "figura": "Account / Designer / PM", "output": "Non include produzione fisica", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Contenuti", "att": "Extended adaptation pack", "desc": "Adattamenti aggiuntivi per canali, formati e touchpoint", "figura": "Designer / Editor", "output": "Pacchetto adattamenti extra", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Contenuti", "att": "Render / compositing avanzato", "desc": "Produzione visual avanzati o interventi compositing", "figura": "Designer / Motion Designer", "output": "Da valutare per complessità", "t1": {"ore": 32.0, "costo": 1600}, "t2": {"ore": 40.0, "costo": 2000}, "t3": {"ore": 48.0, "costo": 2400}}, {"area": "Contenuti", "att": "Localizzazioni aggiuntive", "desc": "Adattamenti linguistici oltre al perimetro base", "figura": "Copywriter / Editor", "output": "Versioni linguistiche aggiuntive", "t1": {"ore": 24.0, "costo": 1200}, "t2": {"ore": 30.0, "costo": 1500}, "t3": {"ore": 36.0, "costo": 1800}}, {"area": "Video Demo", "att": "Demo video — allineamento contenuti", "desc": "Definizione obiettivi, contenuti da mostrare e struttura demo", "figura": "Account / Strategist", "output": "Allineamento contenuti demo", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — raccolta materiali", "desc": "Raccolta materiali tecnici, input prodotto e flussi operativi da rappresentare", "figura": "Strategist / PM", "output": "Input strutturati per produzione", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — script tecnico", "desc": "Scrittura script orientato a spiegazione funzionale del prodotto", "figura": "Copywriter / Strategist", "output": "Script demo approvabile", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — storyboard operativo", "desc": "Definizione sequenze, inquadrature e flussi dimostrativi", "figura": "Creative Director / Video Team", "output": "Storyboard tecnico", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — pianificazione produzione", "desc": "Organizzazione shooting demo (setup, tempi, materiali)", "figura": "Producer / PM", "output": "Piano operativo demo", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — shooting demo", "desc": "Riprese dedicate alla dimostrazione del prodotto", "figura": "Video Team / Director", "output": "Giornata/e di shooting demo", "t1": {"ore": 80.0, "costo": 4000}, "t2": {"ore": 100.0, "costo": 5000}, "t3": {"ore": 120.0, "costo": 6000}}, {"area": "Video Demo", "att": "Demo video — supervisione tecnica", "desc": "Verifica correttezza contenuti durante riprese", "figura": "Strategist / Cliente", "output": "Supervisione contenuti", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — montaggio tecnico", "desc": "Editing orientato alla chiarezza e comprensione del prodotto", "figura": "Editor", "output": "Versione demo video", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}, {"area": "Video Demo", "att": "Demo video — grafiche esplicative", "desc": "Inserimento elementi grafici, callout, highlight funzionali", "figura": "Motion Designer", "output": "Grafiche esplicative", "t1": {"ore": 16.0, "costo": 800}, "t2": {"ore": 20.0, "costo": 1000}, "t3": {"ore": 24.0, "costo": 1200}}, {"area": "Video Demo", "att": "Demo video — sottotitoli e localizzazione", "desc": "Adattamento linguistico e sottotitoli", "figura": "Copywriter / Editor", "output": "File sottotitoli", "t1": {"ore": 12.0, "costo": 600}, "t2": {"ore": 15.0, "costo": 750}, "t3": {"ore": 18.0, "costo": 900}}, {"area": "Video Demo", "att": "Demo video — revisioni", "desc": "Gestione feedback e ottimizzazione finale", "figura": "Editor / PM", "output": "Round revisioni demo", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Video Demo", "att": "Demo video — export e consegna", "desc": "Finalizzazione file e consegna strutturata", "figura": "Editor", "output": "File finali demo", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Chiusura", "att": "QA & delivery finale", "desc": "Controllo qualità finale, organizzazione file e consegna strutturata", "figura": "Editor / PM", "output": "Pacchetto file ordinato e documentato", "t1": {"ore": 8.0, "costo": 400}, "t2": {"ore": 10.0, "costo": 500}, "t3": {"ore": 12.0, "costo": 600}}, {"area": "Project Management", "att": "Gestione e coordinamento progetto", "desc": "Gestione flussi, avanzamento, coordinamento team, feedback e delivery", "figura": "Account / PM", "output": "Gestione end-to-end del progetto", "t1": {"ore": 40.0, "costo": 2000}, "t2": {"ore": 50.0, "costo": 2500}, "t3": {"ore": 60.0, "costo": 3000}}];
+
+    // State: for each item index, which tier is selected ('off','T1','T2','T3'), default T1
+    const state = BUDGET_DATA.map(() => 'T1');
+
+    const overlay   = document.getElementById('bgt-overlay');
+    const btnOpen   = document.getElementById('budget-toggle');
+    const btnClose  = overlay?.querySelector('.bgt-close');
+    const listEl    = document.getElementById('bgt-list');
+    const selListEl = document.getElementById('bgt-sel-list');
+    const totalEl   = document.getElementById('bgt-total');
+    const oreEl     = document.getElementById('bgt-ore-total');
+    const copyBtn   = document.getElementById('bgt-copy-btn');
+    const resetBtn  = document.getElementById('bgt-reset-btn');
+    const tabs      = document.querySelectorAll('.bgt-tab');
+    const presetBtns = document.querySelectorAll('.bgt-preset-btn');
+
+    let activeArea = 'all';
+
+    if (!overlay) return;
+
+    function openBgt()  { document.body.classList.add('bgt-open'); renderList(); renderSidebar(); }
+    function closeBgt() { document.body.classList.remove('bgt-open'); }
+
+    btnOpen?.addEventListener('click', openBgt);
+    btnClose?.addEventListener('click', closeBgt);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && document.body.classList.contains('bgt-open')) closeBgt();
+    });
+
+    // Tabs
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        activeArea = tab.dataset.area;
+        renderList();
+      });
+    });
+
+    // Presets
+    presetBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        presetBtns.forEach(b => b.classList.remove('pactive'));
+        btn.classList.add('pactive');
+        const p = btn.dataset.preset;
+        for (let i = 0; i < state.length; i++) {
+          state[i] = p === 'OFF' ? 'off' : p;
+        }
+        renderList(); renderSidebar();
+      });
+    });
+
+    function fmt(n) {
+      return '€\u00a0' + n.toLocaleString('it-IT');
+    }
+
+    function renderList() {
+      if (!listEl) return;
+      const filtered = BUDGET_DATA
+        .map((item, idx) => ({ ...item, idx }))
+        .filter(item => activeArea === 'all' || item.area === activeArea);
+
+      let html = '';
+      let currentArea = '';
+
+      filtered.forEach(item => {
+        const sel = state[item.idx];
+        const isOff = sel === 'off';
+        const tier = isOff ? null : item[sel.toLowerCase()];
+
+        if (activeArea === 'all' && item.area !== currentArea) {
+          currentArea = item.area;
+          html += `<div style="font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red);padding:10px 2px 4px;">${item.area}</div>`;
+        }
+
+        const isSelected = !isOff;
+        html += `
+          <div class="bgt-item ${isSelected ? 'selected' : 'deselected'}" data-idx="${item.idx}">
+            <div class="bgt-item-left">
+              <div class="bgt-item-name">${item.att}</div>
+              <div class="bgt-item-desc">${item.desc}</div>
+              <div class="bgt-item-meta">
+                <span class="bgt-meta-pill">${item.figura}</span>
+              </div>
+              <div class="bgt-item-output">${item.output}</div>
+            </div>
+            <div class="bgt-tiers">
+              <div class="bgt-tier-btns">
+                <button class="bgt-tier-btn off-btn ${sel==='off'?'active':''}" data-tier="off">Off</button>
+                <button class="bgt-tier-btn ${sel==='T1'?'active':''}" data-tier="T1">T1</button>
+                <button class="bgt-tier-btn ${sel==='T2'?'active':''}" data-tier="T2">T2</button>
+                <button class="bgt-tier-btn ${sel==='T3'?'active':''}" data-tier="T3">T3</button>
+              </div>
+              <div class="bgt-item-cost ${isOff?'deselected-cost':''}">${isOff ? fmt(item.t1.costo) : fmt(tier.costo)}</div>
+              <div class="bgt-item-ore">${isOff ? '' : tier.ore + ' ore'}</div>
+            </div>
+          </div>`;
+      });
+
+      listEl.innerHTML = html;
+
+      // Attach tier button events
+      listEl.querySelectorAll('.bgt-tier-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const card = btn.closest('.bgt-item');
+          const idx = parseInt(card.dataset.idx);
+          state[idx] = btn.dataset.tier;
+          renderList(); renderSidebar();
+        });
+      });
+    }
+
+    function renderSidebar() {
+      if (!selListEl) return;
+      // Group selected items by area
+      const areas = {};
+      let totalCost = 0, totalOre = 0;
+
+      BUDGET_DATA.forEach((item, idx) => {
+        const sel = state[idx];
+        if (sel === 'off') return;
+        const tier = item[sel.toLowerCase()];
+        if (!areas[item.area]) areas[item.area] = [];
+        areas[item.area].push({ name: item.att, tier: sel, costo: tier.costo, ore: tier.ore });
+        totalCost += tier.costo;
+        totalOre += tier.ore;
+      });
+
+      if (Object.keys(areas).length === 0) {
+        selListEl.innerHTML = '<div class="bgt-empty-msg">Nessuna voce.<br>Premi Off su tutto per svuotare, oppure usa un preset.</div>';
+        totalEl.textContent = '€ 0';
+        oreEl.textContent = '0 ore';
+        return;
+      }
+
+      let html = '';
+      for (const [area, rows] of Object.entries(areas)) {
+        const areaCost = rows.reduce((s, r) => s + r.costo, 0);
+        html += `<div class="bgt-sel-group">
+          <div class="bgt-sel-group-label">${area} — ${fmt(areaCost)}</div>`;
+        rows.forEach(r => {
+          html += `<div class="bgt-sel-row">
+            <span class="bgt-sel-row-name">${r.name}</span>
+            <span class="bgt-sel-row-tier">${r.tier}</span>
+            <span class="bgt-sel-row-cost">${fmt(r.costo)}</span>
+          </div>`;
+        });
+        html += '</div>';
+      }
+      selListEl.innerHTML = html;
+      totalEl.textContent = fmt(totalCost);
+      oreEl.textContent = totalOre + ' ore';
+
+      // Update tab badges
+      tabs.forEach(tab => {
+        const area = tab.dataset.area;
+        if (area === 'all') {
+          const hasSel = state.some(s => s !== 'off');
+          tab.classList.toggle('has-selection', hasSel);
+        } else {
+          const hasSel = BUDGET_DATA.some((item, i) => item.area === area && state[i] !== 'off');
+          tab.classList.toggle('has-selection', hasSel);
+        }
+      });
+    }
+
+    // Copy to clipboard
+    copyBtn?.addEventListener('click', () => {
+      const areas = {};
+      let totalCost = 0, totalOre = 0;
+      BUDGET_DATA.forEach((item, idx) => {
+        const sel = state[idx];
+        if (sel === 'off') return;
+        const tier = item[sel.toLowerCase()];
+        if (!areas[item.area]) areas[item.area] = [];
+        areas[item.area].push({ name: item.att, tier: sel, costo: tier.costo, ore: tier.ore });
+        totalCost += tier.costo;
+        totalOre += tier.ore;
+      });
+
+      let text = 'PREVENTIVO PERSONALIZZATO — RIBRAIN × BOBST MASTER M5 MARK II\n';
+      text += '='.repeat(55) + '\n\n';
+      for (const [area, rows] of Object.entries(areas)) {
+        const areaCost = rows.reduce((s, r) => s + r.costo, 0);
+        text += `■ ${area.toUpperCase()} — €${areaCost.toLocaleString('it-IT')}\n`;
+        rows.forEach(r => {
+          text += `  · ${r.name} (${r.tier}) — €${r.costo.toLocaleString('it-IT')} / ${r.ore} ore\n`;
+        });
+        text += '\n';
+      }
+      text += '─'.repeat(40) + '\n';
+      text += `TOTALE: €${totalCost.toLocaleString('it-IT')} / ${totalOre} ore\n`;
+      text += `Ribrain Studio · Proposta BOBST Label · Marzo 2026\n`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.textContent = '✓ Copiato!';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.innerHTML = '📋 Copia riepilogo';
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      }).catch(() => {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        copyBtn.textContent = '✓ Copiato!';
+        copyBtn.classList.add('copied');
+        setTimeout(() => { copyBtn.innerHTML = '📋 Copia riepilogo'; copyBtn.classList.remove('copied'); }, 2000);
+      });
+    });
+
+    // Reset
+    resetBtn?.addEventListener('click', () => {
+      for (let i = 0; i < state.length; i++) state[i] = 'off';
+      presetBtns.forEach(b => b.classList.remove('pactive'));
+      renderList(); renderSidebar();
+    });
+
+    // Init with T1 preset active
+    renderList(); renderSidebar();
+  })();
+
 
   /* ─── MANAGER PANEL ───────────────────────────────────────── */
   const mgrToggle   = document.getElementById('mgr-toggle');
